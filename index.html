@@ -13,6 +13,7 @@
         import { getFirestore, collection, addDoc, onSnapshot, doc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
+        // Konfigurasi Firebase Anda
         const firebaseConfig = {
             apiKey: "AIzaSyCFgS4L5Xrg2dUtZxR8d1H3HbzPVYRINao",
             authDomain: "undangan-digital-wahyitno.firebaseapp.com",
@@ -28,45 +29,48 @@
         const db = getFirestore(app);
         const appId = "undangan-digital-wahyitno";
 
-        window.firebaseStore = { auth, db, appId };
-
-        // Tunggu Auth Berhasil Sebelum Query (RULE 3)
+        // Autentikasi Anonim Sebelum Operasi Apapun (RULE 3)
         const initFirebase = async () => {
             try {
-                await signInAnonymously(auth);
+                const userCredential = await signInAnonymously(auth);
+                console.log("Firebase Connected as:", userCredential.user.uid);
+                
                 onAuthStateChanged(auth, (user) => {
                     if (user) {
-                        console.log("Firebase Connected");
                         loadPublicRSVP();
                     }
                 });
             } catch (error) {
-                console.error("Firebase Error:", error.message);
+                console.error("Firebase Login Error:", error);
+                alertModal("Gagal terhubung ke server database. Silakan cek koneksi internet.");
             }
         };
 
+        // Memuat Data RSVP Secara Real-time (RULE 1 & 2)
         const loadPublicRSVP = () => {
             const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
             
             onSnapshot(colRef, (snapshot) => {
                 let hadir = 0, ragu = 0, tidak = 0;
                 const messagesList = [];
-                const docs = [];
+                const docsData = [];
 
-                snapshot.forEach(d => docs.push({ id: d.id, ...d.data() }));
-                docs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                snapshot.forEach(d => docsData.push({ id: d.id, ...d.data() }));
+                
+                // Sorting Manual di Memori (RULE 2)
+                docsData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-                docs.forEach(data => {
+                docsData.forEach(data => {
                     if (data.status === 'Hadir') hadir++;
                     else if (data.status === 'Masih Ragu') ragu++;
                     else tidak++;
 
-                    const badgeColor = data.status === 'Hadir' ? 'bg-gold/20 text-gold' : 'bg-white/10 text-white/50';
+                    const badgeStyle = data.status === 'Hadir' ? 'bg-gold/20 text-gold' : 'bg-white/10 text-white/50';
                     messagesList.push(`
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-2xl mb-3 text-left backdrop-blur-md shadow-sm">
+                        <div class="bg-white/5 border border-white/10 p-4 rounded-2xl mb-3 text-left backdrop-blur-md">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="font-bold text-[11px] text-white">${data.name}</span>
-                                <span class="text-[7px] px-2 py-0.5 rounded-full font-bold uppercase ${badgeColor}">${data.status}</span>
+                                <span class="text-[7px] px-2 py-0.5 rounded-full font-bold uppercase ${badgeStyle}">${data.status}</span>
                             </div>
                             <p class="text-[10px] text-white/70 italic leading-relaxed">"${data.message || 'Mengirim doa terbaik.'}"</p>
                             <p class="text-[6px] text-white/30 mt-2 uppercase">${new Date(data.timestamp).toLocaleString('id-ID')}</p>
@@ -74,50 +78,69 @@
                     `);
                 });
 
-                // Perbaikan Error: Cek apakah elemen ada sebelum set innerText
-                const elHadir = document.getElementById('count-hadir');
-                const elRagu = document.getElementById('count-ragu');
-                const elTidak = document.getElementById('count-tidak');
-                const elTotal = document.getElementById('count-total');
+                // Update UI Counters dengan Safe Checks
+                const updateText = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerText = val;
+                };
 
-                if (elHadir) elHadir.innerText = hadir;
-                if (elRagu) elRagu.innerText = ragu;
-                if (elTidak) elTidak.innerText = tidak;
-                if (elTotal) elTotal.innerText = hadir + ragu + tidak;
+                updateText('count-hadir', hadir);
+                updateText('count-ragu', ragu);
+                updateText('count-tidak', tidak);
+                updateText('count-total', hadir + ragu + tidak);
                 
                 const container = document.getElementById('public-messages');
-                if (container) container.innerHTML = messagesList.join('') || '<p class="text-[10px] opacity-20 italic py-4 text-center">Belum ada ucapan.</p>';
+                if (container) {
+                    container.innerHTML = messagesList.join('') || '<p class="text-[10px] opacity-20 italic py-4 text-center">Belum ada ucapan.</p>';
+                }
             }, (err) => {
-                console.error("Firestore Error:", err.message);
+                console.error("Firestore Read Error:", err);
             });
         };
 
+        // Fungsi Kirim RSVP (Memperbaiki Masalah Penyimpanan)
         window.submitRSVP = async () => {
             const name = document.getElementById('rsvp-name').value.trim();
             const relation = document.getElementById('rsvp-relation').value;
             const message = document.getElementById('rsvp-message').value.trim();
             const status = document.getElementById('rsvp-status').value;
 
-            if (!auth.currentUser) return alertModal("Koneksi gagal. Cek internet Anda.");
-            if (!name || !status) return alertModal("Isi Nama dan Status Kehadiran.");
+            // Validasi Dasar
+            if (!name || !status) {
+                return alertModal("Mohon lengkapi Nama dan Status Kehadiran.");
+            }
+
+            if (!auth.currentUser) {
+                return alertModal("Sistem belum siap. Mohon tunggu beberapa detik atau muat ulang halaman.");
+            }
 
             const btn = document.getElementById('btn-send-rsvp');
             btn.disabled = true;
-            btn.innerText = "Mengirim...";
+            btn.innerHTML = '<span class="loading-dots">Mengirim</span>';
 
             try {
+                // Path Simpan Sesuai Aturan (RULE 1)
                 const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
+                
                 await addDoc(colRef, {
-                    name, relation, message, status,
+                    name,
+                    relation,
+                    message,
+                    status,
                     timestamp: new Date().toISOString(),
                     uid: auth.currentUser.uid
                 });
                 
+                // Berikan umpan balik positif
+                alertModal("Terima kasih! Konfirmasi dan ucapan Anda telah berhasil disimpan.");
+                
+                // Reset Form
                 document.getElementById('rsvp-name').value = '';
                 document.getElementById('rsvp-message').value = '';
-                alertModal("Terima kasih! Ucapan Anda telah dipublikasikan.");
-            } catch (e) {
-                alertModal("Terjadi kesalahan sistem database.");
+                document.getElementById('rsvp-status').selectedIndex = 0;
+            } catch (error) {
+                console.error("Firestore Write Error:", error);
+                alertModal("Gagal menyimpan data. Pastikan Firebase Firestore Rules sudah diset ke 'allow read, write: if true;'.");
             } finally {
                 btn.disabled = false;
                 btn.innerText = "Kirim Konfirmasi";
@@ -182,7 +205,7 @@
 
         .profile-3d-container { perspective: 2000px; margin-bottom: 2.5rem; position: relative; }
         .crystal-frame-3d {
-            width: 200px; height: 280px; position: relative;
+            width: 210px; height: 290px; position: relative;
             transform-style: preserve-3d; transform: rotateY(-15deg) rotateX(5deg);
             transition: 0.8s;
         }
@@ -210,7 +233,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             flex: 1; color: rgba(249, 247, 242, 0.35); transition: 0.3s;
         }
-        .nav-link svg { width: 26px; height: 26px; margin-bottom: 2px; }
+        .nav-link svg { width: 28px; height: 28px; margin-bottom: 2px; }
         .nav-link span { font-size: 7px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
         .nav-link.active { color: var(--gold) !important; transform: scale(1.1); }
 
@@ -250,6 +273,9 @@
 
         .countdown-num { font-size: 1.8rem; font-weight: 800; color: var(--gold); line-height: 1; }
         .countdown-label { font-size: 7px; text-transform: uppercase; color: rgba(255,255,255,0.4); font-weight: 700; margin-top: 5px; }
+
+        .loading-dots:after { content: '.'; animation: dots 1.5s steps(5, end) infinite; }
+        @keyframes dots { 0%, 20% { content: '.'; } 40% { content: '..'; } 60% { content: '...'; } 80%, 100% { content: ''; } }
     </style>
 </head>
 <body>
@@ -259,6 +285,7 @@
     <div class="watercolor-blob blob-1"></div>
     <div class="watercolor-blob blob-2"></div>
 
+    <!-- AUDIO ELEMENT -->
     <audio id="bg-music" loop>
         <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1771973378/Matthew_Ifield_-_I_Think_They_Call_This_Love_Cover_j4azro.mp3" type="audio/mpeg">
     </audio>
@@ -327,7 +354,7 @@
         </div>
     </section>
 
-    <!-- 4. COUNTDOWN (MENAMBAHKAN KEMBALI) -->
+    <!-- 4. COUNTDOWN -->
     <section id="sec-countdown">
         <div class="w-full max-w-[420px] text-center px-6">
             <h3 class="playfair text-xl font-bold text-gold mb-12 tracking-[0.4em] uppercase opacity-80 italic">Menghitung Waktu</h3>
@@ -410,7 +437,6 @@
                 <div class="recap-item"><p id="count-total" class="text-sm font-bold text-white">0</p><p class="text-[6px] uppercase opacity-40">Tamu</p></div>
                 <div class="recap-item"><p id="count-hadir" class="text-sm font-bold text-gold">0</p><p class="text-[6px] uppercase opacity-40">Hadir</p></div>
                 <div class="recap-item"><p id="count-ragu" class="text-sm font-bold text-white/70">0</p><p class="text-[6px] uppercase opacity-40">Ragu</p></div>
-                <!-- Perbaikan Error: Menambahkan count-tidak yang hilang -->
                 <div class="recap-item"><p id="count-tidak" class="text-sm font-bold text-white/40">0</p><p class="text-[6px] uppercase opacity-40">Izin</p></div>
             </div>
 
@@ -455,7 +481,7 @@
     </div>
 </div>
 
-<!-- MODAL CHAT ASISTEN -->
+<!-- MODAL CHAT ASISTEN (Ditempatkan di luar seksi) -->
 <div id="ai-chat-modal" class="hidden fixed inset-0 z-[500] bg-black/85 backdrop-blur-md flex items-center justify-center p-6 text-center">
     <div class="glass-panel p-8 w-full max-w-sm border-gold/40">
         <div class="flex justify-between items-center mb-4">
@@ -473,7 +499,7 @@
 </div>
 
 <script>
-    // LLM API Config
+    // LLM API Config (Internal)
     const geminiKey = ""; 
     const GEMINI_MODEL = "gemini-2.5-flash-preview-09-2025";
 
@@ -496,16 +522,17 @@
     };
 
     const audio = document.getElementById("bg-music");
+    const musicIcon = document.getElementById("music-icon");
     const musicPath = document.getElementById("music-path");
     let isPlaying = false;
 
     window.toggleMusic = function() {
         if (isPlaying) {
             audio.pause();
-            if(musicPath) musicPath.setAttribute("d", "M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z");
+            if(musicIcon) musicIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>';
         } else {
             audio.play();
-            if(musicPath) musicPath.setAttribute("d", "M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z");
+            if(musicIcon) musicIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>';
         }
         isPlaying = !isPlaying;
     };
@@ -515,7 +542,7 @@
         if (!isPlaying) {
             audio.play().catch(() => {});
             isPlaying = true;
-            if(musicPath) musicPath.setAttribute("d", "M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z");
+            if(musicIcon) musicIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>';
         }
     };
 
@@ -529,7 +556,7 @@
         input.value = "";
         const loading = document.createElement('div');
         loading.className = "italic text-white/50 text-[10px] mt-1";
-        loading.innerHTML = 'Asisten sedang mengetik...';
+        loading.innerHTML = '<span class="loading-dots">Asisten sedang mengetik balasan</span>';
         history.appendChild(loading);
         history.scrollTop = history.scrollHeight;
         try {
@@ -574,7 +601,7 @@
 
     const container = document.getElementById('app-container');
     container.addEventListener('scroll', () => {
-        const sections = ['sec-opening', 'sec-profil', 'sec-acara', 'sec-countdown', 'sec-promotor', 'sec-thanks'];
+        const sections = ['sec-opening', 'sec-profil', 'sec-acara', 'sec-countdown', 'sec-promotor', 'sec-maps', 'sec-thanks'];
         let current = '';
         sections.forEach(s => {
             const el = document.getElementById(s);
