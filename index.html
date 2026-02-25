@@ -53,12 +53,12 @@
                     else tidak++;
                     const badge = data.status === 'Hadir' ? 'bg-gold/20 text-gold' : 'bg-white/10 text-white/50';
                     return `
-                        <div class="bg-white/5 border border-white/10 p-2 rounded-xl mb-2 text-left backdrop-blur-md">
+                        <div class="bg-white/5 border border-white/10 p-2.5 rounded-xl mb-2 text-left backdrop-blur-md">
                             <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-[8px] text-white uppercase tracking-tighter">${data.name}</span>
-                                <span class="text-[5px] px-1.5 py-0.5 rounded-full font-bold uppercase ${badge}">${data.status}</span>
+                                <span class="font-bold text-[9px] text-white uppercase tracking-tighter">${data.name}</span>
+                                <span class="text-[6px] px-1.5 py-0.5 rounded-full font-bold uppercase ${badge}">${data.status}</span>
                             </div>
-                            <p class="text-[8px] text-white/70 italic leading-tight">"${data.message || 'Doa terbaik untuk Bapak.'}"</p>
+                            <p class="text-[9px] text-white/70 italic leading-snug">"${data.message || 'Doa terbaik untuk Bapak.'}"</p>
                         </div>
                     `;
                 }).join('');
@@ -70,7 +70,7 @@
                 safeSet('count-total', hadir + ragu + tidak);
                 
                 const container = document.getElementById('public-messages');
-                if (container) container.innerHTML = messagesHTML || '<p class="text-[8px] opacity-20 italic py-2 text-center">Belum ada ucapan.</p>';
+                if (container) container.innerHTML = messagesHTML || '<p class="text-[9px] opacity-20 italic py-2 text-center">Belum ada ucapan.</p>';
             });
         };
 
@@ -144,9 +144,6 @@
         
         .sec-fixed { height: 100vh; }
         .sec-auto { min-height: 100vh; height: auto; padding-bottom: 120px; justify-content: center; padding-top: 30px; }
-        
-        /* Geser ke atas untuk Home & Profil ✨ */
-        .sec-top-align { height: 100vh; justify-content: flex-start; padding-top: 50px; }
 
         .batik-pattern {
             position: absolute; inset: 0; opacity: 0.04; pointer-events: none;
@@ -214,7 +211,7 @@
         }
 
         .countdown-num { font-size: 1.8rem; font-weight: 800; color: var(--gold); line-height: 1; }
-        .countdown-label { font-size: 9px; text-transform: uppercase; color: rgba(255,255,255,0.4); font-weight: 700; margin-top: 5px; }
+        .countdown-label { font-size: 8px; text-transform: uppercase; color: rgba(255,255,255,0.4); font-weight: 700; margin-top: 5px; }
 
         .glass-panel {
             background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(20px);
@@ -266,14 +263,15 @@
         </button>
     </div>
 
-    <!-- 1. HOME (Geser Atas & Presisi) ✨ -->
-    <section id="sec-opening" class="sec-top-align">
+    <!-- 1. HOME (Centered Precise) ✨ -->
+    <section id="sec-opening" class="sec-fixed justify-center">
         <div class="text-center z-10 px-6">
             <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1771851801/LOGO_UNPAS_vmoyf9.png" alt="Logo" class="w-20 mx-auto mb-4">
             <p class="font-script text-4xl mb-1 text-gold">Undangan</p>
             <h2 class="font-cinzel font-bold text-base tracking-[0.2em] mb-2 uppercase">Sidang Promosi Doktor</h2>
             <p class="text-[10px] tracking-[0.3em] opacity-70 mb-8 border-y border-white/10 py-1.5 uppercase font-bold text-center">Pascasarjana Universitas Pasundan</p>
-            <h1 class="font-playfair text-3xl font-bold text-white mb-10 tracking-wide leading-tight">Dr. Wahyitno, S.Pd., M.M.</h1>
+            <!-- Nama 1 Baris ✨ -->
+            <h1 class="font-playfair text-3xl font-bold text-white mb-10 tracking-wide leading-tight whitespace-nowrap">Dr. Wahyitno, S.Pd., M.M.</h1>
             <div class="mb-10 bg-white/5 py-4 px-8 rounded-3xl border border-white/10 inline-block min-w-[200px] backdrop-blur-sm shadow-xl text-center">
                 <p class="opacity-40 text-[7px] uppercase tracking-widest mb-1">Kepada Bapak/Ibu/Saudara/i:</p>
                 <p class="font-playfair text-white font-bold text-lg tracking-wide italic">Tamu Undangan</p>
@@ -283,8 +281,8 @@
         </div>
     </section>
 
-    <!-- 2. PROFIL (Geser Atas & Diperbesar) ✨ -->
-    <section id="sec-profil" class="sec-top-align">
+    <!-- 2. PROFIL (Centered Precise) ✨ -->
+    <section id="sec-profil" class="sec-fixed justify-center">
         <div class="text-center w-full px-8">
             <p class="font-script text-4xl text-gold mb-5 text-center">Assalamu’alaikum</p>
             <p class="text-[11px] leading-relaxed text-white/70 mb-8 italic text-center px-2">Tanpa mengurangi rasa hormat kami bermaksud mengundang Bapak/Ibu pada Sidang Promosi Doktor:</p>
@@ -295,12 +293,13 @@
                     </div>
                 </div>
             </div>
-            <h2 class="font-playfair text-2xl font-bold text-white mb-2 tracking-wide text-center mt-8">Dr. Wahyitno, S.Pd., M.M.</h2>
+            <!-- Nama 1 Baris ✨ -->
+            <h2 class="font-playfair text-2xl font-bold text-white mb-2 tracking-wide text-center mt-8 whitespace-nowrap">Dr. Wahyitno, S.Pd., M.M.</h2>
             <div class="h-[1px] w-16 bg-gold/40 mx-auto mt-4"></div>
         </div>
     </section>
 
-    <!-- 3. ACARA (Presisi Tengah & Jajajar) ✨ -->
+    <!-- 3. ACARA -->
     <section id="sec-acara" class="sec-auto">
         <div class="w-full max-w-[420px] px-4 text-center">
             <div class="glass-panel p-8 border-gold/20 shadow-xl">
@@ -313,7 +312,6 @@
                     (Survey Pada Perusahaan Logistik Swasta Nasional Di Bekasi Raya)
                 </p>
                 
-                <!-- Geser sedikit ke atas ✨ -->
                 <div class="flex items-center justify-center gap-6 my-8 border-t border-white/5 pt-6 font-montserrat">
                     <div class="text-right"><p class="font-bold text-xl text-white uppercase tracking-wider">Kamis</p></div>
                     <div class="h-10 w-px bg-gold/40"></div>
@@ -325,8 +323,8 @@
                 </div>
                 
                 <p class="text-[15px] font-bold text-gold uppercase tracking-[0.2em] border-y border-white/10 inline-block px-5 py-2 mb-4 font-playfair whitespace-nowrap">08.30 WIB - Selesai</p>
-                <!-- Sejajar & Di dalam kotak ✨ -->
-                <p class="text-[11px] font-bold text-white uppercase mb-1 tracking-widest whitespace-nowrap">Pascasarjana Universitas Pasundan</p>
+                <!-- Sejajar ✨ -->
+                <p class="text-[11px] font-bold text-white uppercase mb-1 tracking-widest whitespace-nowrap px-4 overflow-hidden text-ellipsis">Pascasarjana Universitas Pasundan</p>
                 <p class="text-[10px] text-white/50 italic font-medium">Jl. Sumatera No. 41, Bandung</p>
             </div>
         </div>
@@ -358,18 +356,17 @@
         </div>
     </section>
 
-    <!-- 5. TIM (Pas 1 Layar & Geser Bawah ✨) -->
+    <!-- 5. TIM -->
     <section id="sec-promotor" class="sec-fixed justify-center">
         <div class="w-full max-w-[420px] px-6 text-center">
-            <!-- Judul Satu Baris ✨ -->
             <h3 class="playfair text-xl font-bold text-gold mb-6 uppercase tracking-[0.3em] border-b border-gold/20 pb-3 italic whitespace-nowrap">Dewan Akademik</h3>
             <div class="space-y-3">
                 <div class="glass-panel p-4 bg-black/30 text-left border-gold/15 shadow-xl">
                     <p class="text-[9px] text-gold font-bold uppercase tracking-[0.4em] mb-2 opacity-80">Promotor Utama</p>
-                    <p class="font-bold text-[14px] text-white tracking-widest font-playfair leading-tight">Prof. Dr. H. Sidik Priadana, M.S.</p>
+                    <p class="font-bold text-[14px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap">Prof. Dr. H. Sidik Priadana, M.S.</p>
                     <div class="h-px w-full bg-white/5 my-2"></div>
                     <p class="text-[9px] text-gold font-bold uppercase tracking-[0.4em] mb-2 opacity-80">Co Promotor</p>
-                    <p class="font-bold text-[14px] text-white tracking-widest font-playfair leading-tight">Prof. Dr. H. Dedi Hadian, M.M.</p>
+                    <p class="font-bold text-[14px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap">Prof. Dr. H. Dedi Hadian, M.M.</p>
                 </div>
                 
                 <div class="glass-panel p-4 bg-black/10 border-white/5">
@@ -377,23 +374,23 @@
                     <div class="space-y-2 text-white/90 font-medium text-[11px] text-left font-playfair">
                         <div class="border-b border-white/5 pb-1 flex items-center gap-3">
                             <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                            <span class="leading-tight">Prof. Dr. H. Azhar Affandi, M.Sc.</span>
+                            <span class="leading-tight whitespace-nowrap">Prof. Dr. H. Azhar Affandi, M.Sc.</span>
                         </div>
                         <div class="border-b border-white/5 pb-1 flex items-center gap-3">
                             <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                            <span class="leading-tight">Prof. Dr. H. Bambang Heru P., M.S.</span>
+                            <span class="leading-tight whitespace-nowrap">Prof. Dr. H. Bambang Heru P., M.S.</span>
                         </div>
                         <div class="border-b border-white/5 pb-1 flex items-center gap-3">
                             <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                            <span class="leading-tight">Prof. Dr. H. Jaja Suteja, S.E., M.Si.</span>
+                            <span class="leading-tight whitespace-nowrap">Prof. Dr. H. Jaja Suteja, S.E., M.Si.</span>
                         </div>
                         <div class="border-b border-white/5 pb-1 flex items-center gap-3">
                             <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                            <span class="leading-tight">Prof. Dr. H. Horas Djulius, S.E.</span>
+                            <span class="leading-tight whitespace-nowrap">Prof. Dr. H. Horas Djulius, S.E.</span>
                         </div>
                         <div class="flex items-center gap-3">
                             <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                            <span class="leading-tight">Prof. Dr. H. Fitri Djulius, S.E.</span>
+                            <span class="leading-tight whitespace-nowrap">Prof. Dr. H. Fitri Djulius, S.E.</span>
                         </div>
                     </div>
                 </div>
@@ -430,7 +427,7 @@
         </div>
     </section>
 
-    <!-- 7. RSVP (Presisi & Geser Atas ✨) -->
+    <!-- 7. RSVP (Koreksi Nama & Font) ✨ -->
     <section id="sec-thanks" class="sec-auto" style="padding-top: 20px;">
         <div class="w-full max-w-[420px] px-4 text-center">
             <h3 class="playfair text-2xl font-bold text-gold mb-6 uppercase tracking-widest italic">RSVP & Ucapan</h3>
@@ -466,8 +463,9 @@
             </div>
             
             <div class="pb-12 text-center">
-                <p class="text-[11px] uppercase tracking-[0.6em] opacity-40 mb-1 font-bold font-playfair">Hormat Saya,</p>
-                <h2 class="font-playfair text-xl font-bold text-gold tracking-widest uppercase leading-tight">Dr. Wahyitno, S.Pd., M.M.</h2>
+                <p class="text-[11px] uppercase tracking-[0.6em] opacity-40 mb-1 font-bold font-playfair text-center">Hormat Saya,</p>
+                <!-- Nama dengan Font Playfair agar mendukung Casing & 1 Baris ✨ -->
+                <h2 class="font-playfair text-xl font-bold text-gold tracking-widest leading-tight whitespace-nowrap">Dr. Wahyitno, S.Pd., M.M.</h2>
             </div>
         </div>
     </section>
