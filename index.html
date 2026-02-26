@@ -140,9 +140,10 @@
             display: flex; flex-direction: column; 
             align-items: center; padding: 20px; position: relative;
             overflow: hidden; flex-shrink: 0;
-            justify-content: center;
+            justify-content: center; /* Default center for iPhone ✨ */
         }
         
+        /* Layout Scrollable for Team & RSVP */
         .sec-scrollable { height: 100dvh; justify-content: flex-start; padding-top: 30px; padding-bottom: 100px; }
 
         .batik-pattern {
@@ -251,7 +252,6 @@
     <div class="watercolor-blob blob-2"></div>
 
     <audio id="bg-music" loop>
-        <!-- Musik Baru ✨ -->
         <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1772080461/videoplayback_2_pgcxvx.mp3" type="audio/mpeg">
     </audio>
 
@@ -261,15 +261,15 @@
         </button>
     </div>
 
-    <!-- 1. HOME -->
+    <!-- 1. HOME (Ukuran Nama Diperkecil ✨) -->
     <section id="sec-opening">
         <div class="text-center z-10 w-full px-6 -mt-8">
             <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1771851801/LOGO_UNPAS_vmoyf9.png" alt="Logo" class="w-20 mx-auto mb-6">
             <p class="font-script text-5xl mb-1 text-gold">Undangan</p>
             <h2 class="font-cinzel font-bold text-base tracking-[0.2em] mb-2 uppercase">Sidang Promosi Doktor</h2>
             <p class="text-[10px] tracking-[0.3em] opacity-70 mb-8 border-y border-white/10 py-1.5 uppercase font-bold text-center">Pascasarjana Universitas Pasundan</p>
-            <!-- Nama diperkecil sedikit ✨ -->
-            <h1 class="font-playfair text-[1.4rem] font-bold text-white mb-10 tracking-wide leading-tight whitespace-nowrap overflow-hidden text-ellipsis px-4">Dr. Wahyitno, S.Pd., M.M.</h1>
+            <!-- Font nama diperkecil khusus halaman Home (text-xl) ✨ -->
+            <h1 class="font-playfair text-xl font-bold text-white mb-10 tracking-wide leading-tight whitespace-nowrap overflow-hidden text-ellipsis px-4">Dr. Wahyitno, S.Pd., M.M.</h1>
             <div class="mb-10 bg-white/5 py-4 px-8 rounded-3xl border border-white/10 inline-block min-w-[200px] backdrop-blur-sm shadow-xl text-center">
                 <p class="opacity-40 text-[7px] uppercase tracking-widest mb-1">Kepada Bapak/Ibu/Saudara/i:</p>
                 <p class="font-playfair text-white font-bold text-lg tracking-wide italic">Tamu Undangan</p>
@@ -291,7 +291,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Nama diperkecil sedikit ✨ -->
+            <!-- Nama halaman profil tetap text-xl ✨ -->
             <h2 class="font-playfair text-xl font-bold text-white mb-2 tracking-wide text-center mt-10 whitespace-nowrap overflow-hidden text-ellipsis px-4">Dr. Wahyitno, S.Pd., M.M.</h2>
             <div class="h-[1px] w-16 bg-gold/40 mx-auto mt-4"></div>
         </div>
@@ -355,7 +355,7 @@
         </div>
     </section>
 
-    <!-- 5. TIM (DAFTAR PENELAAH DIPERBAIKI ✨) -->
+    <!-- 5. TIM -->
     <section id="sec-promotor" class="sec-scrollable">
         <div class="w-full max-w-[420px] px-6 text-center">
             <h3 class="playfair text-lg font-bold text-gold mb-6 uppercase tracking-[0.3em] border-b border-gold/20 pb-3 italic whitespace-nowrap">Dewan Akademik</h3>
@@ -371,7 +371,6 @@
                 <div class="glass-panel p-5 bg-black/10 border-white/5">
                     <p class="text-[9px] text-gold font-bold uppercase tracking-[0.4em] mb-4 italic text-white/60 text-center">Penelaah / Penguji</p>
                     <div class="space-y-2.5 text-white/90 font-medium text-[11px] text-left font-playfair">
-                        <!-- Update Penelaah Sesuai Daftar ✨ -->
                         <div class="border-b border-white/5 pb-1 flex items-center gap-3">
                             <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
                             <span class="leading-tight whitespace-nowrap">Prof. Dr. H. Azhar Affandi, M.Sc.</span>
