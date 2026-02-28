@@ -144,7 +144,8 @@
             justify-content: center;
         }
         
-        .sec-scrollable { height: 100dvh; justify-content: flex-start; padding-top: 30px; padding-bottom: 110px; }
+        /* Layout Scrollable optimized to avoid fixed nav overlap ✨ */
+        .sec-scrollable { height: 100dvh; justify-content: flex-start; padding-top: 30px; padding-bottom: 120px; }
 
         .batik-pattern {
             position: absolute; inset: 0; opacity: 0.04; pointer-events: none;
@@ -238,9 +239,9 @@
             animation: pulse 2s infinite; top: 40%;
         }
         
-        /* Optimasi kontainer pesan ucapan agar lebih tinggi dan mudah dibaca ✨ */
+        /* Container optimized for mobile view height ✨ */
         #public-messages { 
-            max-height: 250px; 
+            max-height: 180px; /* Reduced to fit footer better in one view */
             overflow-y: auto; 
             scrollbar-width: thin; 
             scrollbar-color: var(--gold) transparent;
@@ -372,15 +373,15 @@
             <h3 class="playfair text-lg font-bold text-gold mb-6 uppercase tracking-[0.3em] border-b border-gold/20 pb-3 italic whitespace-nowrap">Dewan Akademik</h3>
             <div class="space-y-4">
                 <div class="glass-panel p-5 bg-black/30 text-left border-gold/15 shadow-xl">
-                    <p class="text-[10px] text-gold font-bold uppercase tracking-[0.4em] mb-2 opacity-80">Promotor Utama</p>
-                    <p class="font-bold text-[15px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Prof. Dr. H. Sidik Priadana, M.S.</p>
+                    <p class="text-[10px] text-gold font-bold uppercase tracking-[0.4em] mb-2 opacity-80">Promotor</p>
+                    <p class="font-bold text-[12px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Prof. Dr. H. Sidik Priadana, M.S.</p>
                     <div class="h-px w-full bg-white/5 my-3"></div>
                     <p class="text-[10px] text-gold font-bold uppercase tracking-[0.4em] mb-2 opacity-80">Co Promotor</p>
-                    <p class="font-bold text-[15px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Prof. Dr. H. Dedi Hadian, M.M.</p>
+                    <p class="font-bold text-[12px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Prof. Dr. H. Dedi Hadian, M.M.</p>
                 </div>
                 
                 <div class="glass-panel p-5 bg-black/10 border-white/5">
-                    <p class="text-[9px] text-gold font-bold uppercase tracking-[0.4em] mb-4 italic text-white/60 text-center">Penelaah / Penguji</p>
+                    <p class="text-[11px] text-gold font-bold uppercase tracking-[0.4em] mb-4 italic text-white/60 text-center">Penelaah / Penguji</p>
                     <div class="space-y-2 text-white/90 font-medium text-[10px] text-left font-playfair">
                         <div class="border-b border-white/5 pb-1 flex items-center gap-3">
                             <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
@@ -445,44 +446,46 @@
         </div>
     </section>
 
-    <!-- 7. RSVP -->
+    <!-- 7. RSVP (Optimasi Layout Anti-Terpotong ✨) -->
     <section id="sec-thanks" class="sec-scrollable">
         <div class="w-full max-w-[420px] px-4 text-center">
-            <h3 class="playfair text-2xl font-bold text-gold mb-6 uppercase tracking-widest italic">RSVP & Ucapan</h3>
+            <h3 class="playfair text-2xl font-bold text-gold mb-4 uppercase tracking-widest italic">RSVP & Ucapan</h3>
             
-            <div class="flex justify-between gap-2 mb-6">
-                <div class="recap-item"><p id="count-total" class="text-sm font-bold text-white font-cinzel">0</p><p class="text-[7px] uppercase opacity-50 font-bold tracking-tighter">Tamu</p></div>
-                <div class="recap-item"><p id="count-hadir" class="text-sm font-bold text-gold font-cinzel">0</p><p class="text-[7px] uppercase opacity-50 font-bold tracking-tighter">Hadir</p></div>
-                <div class="recap-item"><p id="count-ragu" class="text-sm font-bold text-white/70 font-cinzel">0</p><p class="text-[7px] uppercase opacity-50 font-bold tracking-tighter">Ragu</p></div>
-                <div class="recap-item"><p id="count-tidak" class="text-sm font-bold text-white/40 font-cinzel">0</p><p class="text-[7px] uppercase opacity-50 font-bold tracking-tighter">Izin</p></div>
+            <!-- Recap row made more compact -->
+            <div class="flex justify-between gap-1.5 mb-4">
+                <div class="recap-item py-1.5"><p id="count-total" class="text-sm font-bold text-white font-cinzel">0</p><p class="text-[6px] uppercase opacity-50 font-bold tracking-tighter">Tamu</p></div>
+                <div class="recap-item py-1.5"><p id="count-hadir" class="text-sm font-bold text-gold font-cinzel">0</p><p class="text-[6px] uppercase opacity-50 font-bold tracking-tighter">Hadir</p></div>
+                <div class="recap-item py-1.5"><p id="count-ragu" class="text-sm font-bold text-white/70 font-cinzel">0</p><p class="text-[6px] uppercase opacity-50 font-bold tracking-tighter">Ragu</p></div>
+                <div class="recap-item py-1.5"><p id="count-tidak" class="text-sm font-bold text-white/40 font-cinzel">0</p><p class="text-[6px] uppercase opacity-50 font-bold tracking-tighter">Izin</p></div>
             </div>
 
-            <div class="glass-panel p-5 text-left border-gold/15 space-y-3 mb-6 shadow-2xl">
+            <div class="glass-panel p-4 text-left border-gold/15 space-y-2.5 mb-4 shadow-2xl">
                 <div class="grid grid-cols-2 gap-2">
-                    <input id="rsvp-name" type="text" placeholder="Nama Lengkap">
-                    <select id="rsvp-relation">
+                    <input id="rsvp-name" type="text" placeholder="Nama Lengkap" class="py-2">
+                    <select id="rsvp-relation" class="py-2">
                         <option value="Rekan Sejawat">Rekan Sejawat</option>
                         <option value="Keluarga">Keluarga</option>
                         <option value="Mahasiswa">Mahasiswa</option>
                     </select>
                 </div>
-                <textarea id="rsvp-message" placeholder="Tulis doa atau ucapan terbaik..." rows="2"></textarea>
-                <select id="rsvp-status">
+                <textarea id="rsvp-message" placeholder="Tulis doa atau ucapan terbaik..." rows="2" class="py-2"></textarea>
+                <select id="rsvp-status" class="py-2">
                     <option value="" disabled selected>Konfirmasi Kehadiran</option>
                     <option value="Hadir">Hadir</option>
                     <option value="Masih Ragu">Masih Ragu</option>
                     <option value="Tidak Hadir">Tidak Hadir</option>
                 </select>
-                <button id="btn-send-rsvp" onclick="submitRSVP()" class="bg-gold text-deep-sage font-black py-3.5 rounded-xl text-[11px] uppercase shadow-xl w-full tracking-widest active:scale-95 transition-all">Kirim Konfirmasi</button>
+                <button id="btn-send-rsvp" onclick="submitRSVP()" class="bg-gold text-deep-sage font-black py-3 rounded-xl text-[10px] uppercase shadow-xl w-full tracking-widest active:scale-95 transition-all">Kirim Konfirmasi</button>
             </div>
 
-            <!-- Kontainer Pesan Dengan Keterbacaan Lebih Baik ✨ -->
-            <div id="public-messages" class="w-full shadow-inner bg-black/10 rounded-2xl mb-8">
-                <p class="text-[11px] opacity-30 italic py-4 text-center">Memuat ucapan...</p>
+            <!-- List Ucapan dengan Ketinggian Terkontrol ✨ -->
+            <div id="public-messages" class="w-full shadow-inner bg-black/10 rounded-2xl mb-6">
+                <p class="text-[10px] opacity-30 italic py-4 text-center">Memuat ucapan...</p>
             </div>
             
-            <div class="text-center">
+            <div class="text-center pb-8">
                 <p class="text-[11px] uppercase tracking-[0.6em] opacity-40 mb-1 font-bold font-playfair text-center">Hormat Saya,</p>
+                <!-- Nama Proper Case (Bukan Kapital Semua) -->
                 <h2 class="font-playfair text-lg font-bold text-gold tracking-widest leading-tight whitespace-nowrap overflow-hidden text-ellipsis px-2">Dr. Wahyitno, S.Pd., M.M.</h2>
             </div>
         </div>
