@@ -53,12 +53,13 @@
                     else tidak++;
                     const badge = data.status === 'Hadir' ? 'bg-gold/20 text-gold' : 'bg-white/10 text-white/50';
                     return `
-                        <div class="bg-white/5 border border-white/10 p-2 rounded-lg mb-1.5 text-left backdrop-blur-md">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="font-bold text-[8px] text-white uppercase tracking-tighter">${data.name}</span>
-                                <span class="text-[5px] px-1.5 py-0.5 rounded-full font-bold uppercase ${badge}">${data.status}</span>
+                        <!-- Perbaikan kartu ucapan untuk keterbacaan penuh ✨ -->
+                        <div class="bg-white/5 border border-white/10 p-3 rounded-xl mb-3 text-left backdrop-blur-md w-full shadow-lg">
+                            <div class="flex justify-between items-start mb-2 border-b border-white/10 pb-1.5">
+                                <span class="font-bold text-[11px] text-white tracking-wide leading-tight pr-2">${data.name}</span>
+                                <span class="text-[7px] px-2 py-0.5 rounded-full font-bold uppercase shrink-0 ${badge}">${data.status}</span>
                             </div>
-                            <p class="text-[8px] text-white/70 italic leading-tight">"${data.message || 'Doa terbaik untuk Bapak.'}"</p>
+                            <p class="text-[11px] text-white/90 leading-relaxed whitespace-pre-wrap italic">"${data.message || 'Doa terbaik untuk Bapak.'}"</p>
                         </div>
                     `;
                 }).join('');
@@ -70,11 +71,11 @@
                 safeSet('count-total', hadir + ragu + tidak);
                 
                 const container = document.getElementById('public-messages');
-                if (container) container.innerHTML = messagesHTML || '<p class="text-[8px] opacity-20 italic py-2 text-center">Belum ada ucapan.</p>';
+                if (container) container.innerHTML = messagesHTML || '<p class="text-[11px] opacity-20 italic py-4 text-center">Belum ada ucapan.</p>';
             });
         };
 
-       window.submitRSVP = async () => {
+        window.submitRSVP = async () => {
             const name = document.getElementById('rsvp-name').value.trim();
             const rel = document.getElementById('rsvp-relation').value;
             const msg = document.getElementById('rsvp-message').value.trim();
@@ -140,11 +141,10 @@
             display: flex; flex-direction: column; 
             align-items: center; padding: 20px; position: relative;
             overflow: hidden; flex-shrink: 0;
-            justify-content: center; /* Default center for iPhone ✨ */
+            justify-content: center;
         }
         
-        /* Layout Scrollable for Team & RSVP */
-        .sec-scrollable { height: 100dvh; justify-content: flex-start; padding-top: 30px; padding-bottom: 100px; }
+        .sec-scrollable { height: 100dvh; justify-content: flex-start; padding-top: 30px; padding-bottom: 110px; }
 
         .batik-pattern {
             position: absolute; inset: 0; opacity: 0.04; pointer-events: none;
@@ -237,6 +237,19 @@
             position: absolute; width: 15px; height: 15px; background: var(--gold); border-radius: 50%;
             animation: pulse 2s infinite; top: 40%;
         }
+        
+        /* Optimasi kontainer pesan ucapan agar lebih tinggi dan mudah dibaca ✨ */
+        #public-messages { 
+            max-height: 250px; 
+            overflow-y: auto; 
+            scrollbar-width: thin; 
+            scrollbar-color: var(--gold) transparent;
+            padding: 5px; 
+            width: 100%; 
+        }
+        #public-messages::-webkit-scrollbar { width: 4px; }
+        #public-messages::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 10px; }
+
         @keyframes pulse {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
@@ -262,14 +275,13 @@
     </div>
 
     <!-- 1. HOME -->
-   <section id="sec-opening">
+    <section id="sec-opening">
         <div class="text-center z-10 w-full px-6 -mt-8">
-            <!-- Logo diperbesar sedikit ✨ -->
             <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo" class="w-28 mx-auto mb-6">
             <p class="font-script text-5xl mb-1 text-gold">Undangan</p>
             <h2 class="font-cinzel font-bold text-base tracking-[0.2em] mb-2 uppercase">Sidang Promosi Doktor</h2>
             <p class="text-[10px] tracking-[0.3em] opacity-70 mb-8 border-y border-white/10 py-1.5 uppercase font-bold text-center">Pascasarjana Universitas Pasundan</p>
-            <h1 class="font-playfair text-l font-bold text-white mb-10 tracking-wide leading-tight whitespace-nowrap overflow-hidden text-ellipsis px-4">Dr. Wahyitno, S.Pd., M.M.</h1>
+            <h1 class="font-playfair text-xl font-bold text-white mb-10 tracking-wide leading-tight whitespace-nowrap overflow-hidden text-ellipsis px-4">Dr. Wahyitno, S.Pd., M.M.</h1>
             <div class="mb-10 bg-white/5 py-4 px-8 rounded-3xl border border-white/10 inline-block min-w-[200px] backdrop-blur-sm shadow-xl text-center">
                 <p class="opacity-40 text-[7px] uppercase tracking-widest mb-1">Kepada Bapak/Ibu/Saudara/i:</p>
                 <p class="font-playfair text-white font-bold text-lg tracking-wide italic">Tamu Undangan</p>
@@ -300,7 +312,7 @@
     <section id="sec-acara">
         <div class="w-full max-w-[420px] px-4 text-center">
             <div class="glass-panel p-6 border-gold/20 shadow-xl">
-                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo UNPAS" class="w-16 mx-auto mb-6">
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo UNPAS" class="w-14 mx-auto mb-6">
                 
                 <h2 class="font-cinzel text-[13px] font-bold text-white leading-relaxed tracking-wide uppercase px-1">
                     PENGARUH KEPEMIMPINAN TRANSFORMASIONAL, BUDAYA ORGANISASI DAN KOMPETENSI TEKNIS TERHADAP ETOS KERJA SERTA IMPLIKASINYA PADA KINERJA KARYAWAN YANG DIMODERASI OLEH KEBIJAKAN KOMPENSASI
@@ -319,7 +331,7 @@
                     </div>
                 </div>
                 
-                <p class="text-[14px] font-bold text-gold uppercase tracking-[0.2em] border-y border-white/10 inline-block px-5 py-2 mb-4 font-playfair whitespace-nowrap">08.00 WIB - Selesai</p>
+                <p class="text-[14px] font-bold text-gold uppercase tracking-[0.2em] border-y border-white/10 inline-block px-5 py-2 mb-4 font-playfair whitespace-nowrap">08.30 WIB - Selesai</p>
                 <div class="w-full overflow-hidden px-1">
                     <p class="text-[9px] font-bold text-white uppercase mb-1 tracking-widest whitespace-nowrap">Pascasarjana Universitas Pasundan</p>
                 </div>
@@ -354,23 +366,22 @@
         </div>
     </section>
 
-    <!-- 5. TIM (DAFTAR PENELAAH DIPERBARUI ✨) -->
+    <!-- 5. TIM -->
     <section id="sec-promotor" class="sec-scrollable">
-        <div class="w-full max-w-[420px] px-10 text-center">
-            <!-- Ukuran Judul Diperkecil Sesuai Permintaan ✨ -->
+        <div class="w-full max-w-[420px] px-6 text-center">
             <h3 class="playfair text-lg font-bold text-gold mb-6 uppercase tracking-[0.3em] border-b border-gold/20 pb-3 italic whitespace-nowrap">Dewan Akademik</h3>
             <div class="space-y-4">
                 <div class="glass-panel p-5 bg-black/30 text-left border-gold/15 shadow-xl">
-                    <p class="text-[10px] text-gold font-bold uppercase tracking-[0.4em] mb-2 opacity-80">Promotor</p>
-                    <p class="font-bold text-[11px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Prof. Dr. H. M. Sidik Priadana, M.S.</p>
+                    <p class="text-[10px] text-gold font-bold uppercase tracking-[0.4em] mb-2 opacity-80">Promotor Utama</p>
+                    <p class="font-bold text-[15px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Prof. Dr. H. Sidik Priadana, M.S.</p>
                     <div class="h-px w-full bg-white/5 my-3"></div>
                     <p class="text-[10px] text-gold font-bold uppercase tracking-[0.4em] mb-2 opacity-80">Co Promotor</p>
-                    <p class="font-bold text-[11px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Prof. Dr. H. Dedi Hadian, M.M.</p>
+                    <p class="font-bold text-[15px] text-white tracking-widest font-playfair leading-tight whitespace-nowrap overflow-hidden text-ellipsis">Prof. Dr. H. Dedi Hadian, M.M.</p>
                 </div>
                 
                 <div class="glass-panel p-5 bg-black/10 border-white/5">
                     <p class="text-[9px] text-gold font-bold uppercase tracking-[0.4em] mb-4 italic text-white/60 text-center">Penelaah / Penguji</p>
-                    <div class="space-y-2 text-white/90 font-medium text-[12px] text-left font-playfair">
+                    <div class="space-y-2 text-white/90 font-medium text-[10px] text-left font-playfair">
                         <div class="border-b border-white/5 pb-1 flex items-center gap-3">
                             <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
                             <span class="leading-tight whitespace-nowrap">Prof. Dr. H. Azhar Affandi, M.Sc.</span>
@@ -467,12 +478,11 @@
 
             <!-- Kontainer Pesan Dengan Keterbacaan Lebih Baik ✨ -->
             <div id="public-messages" class="w-full shadow-inner bg-black/10 rounded-2xl mb-8">
-                <p class="text-[10px] opacity-30 italic py-4 text-center">Memuat ucapan...</p>
+                <p class="text-[11px] opacity-30 italic py-4 text-center">Memuat ucapan...</p>
             </div>
             
             <div class="text-center">
                 <p class="text-[11px] uppercase tracking-[0.6em] opacity-40 mb-1 font-bold font-playfair text-center">Hormat Saya,</p>
-                <!-- Nama Proper Case (Bukan Kapital Semua) ✨ -->
                 <h2 class="font-playfair text-lg font-bold text-gold tracking-widest leading-tight whitespace-nowrap overflow-hidden text-ellipsis px-2">Dr. Wahyitno, S.Pd., M.M.</h2>
             </div>
         </div>
