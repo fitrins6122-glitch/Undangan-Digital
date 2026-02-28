@@ -465,13 +465,14 @@
                 <button id="btn-send-rsvp" onclick="submitRSVP()" class="bg-gold text-deep-sage font-black py-3.5 rounded-xl text-[11px] uppercase shadow-xl w-full tracking-widest active:scale-95 transition-all">Kirim Konfirmasi</button>
             </div>
 
-            <div id="public-messages" class="w-full shadow-inner bg-black/10 rounded-2xl p-3 mb-8">
+            <!-- Kontainer Pesan Dengan Keterbacaan Lebih Baik ✨ -->
+            <div id="public-messages" class="w-full shadow-inner bg-black/10 rounded-2xl mb-8">
                 <p class="text-[10px] opacity-30 italic py-4 text-center">Memuat ucapan...</p>
             </div>
             
             <div class="text-center">
                 <p class="text-[11px] uppercase tracking-[0.6em] opacity-40 mb-1 font-bold font-playfair text-center">Hormat Saya,</p>
-                <!-- Penulisan Proper Case Untuk Nama ✨ -->
+                <!-- Nama Proper Case (Bukan Kapital Semua) ✨ -->
                 <h2 class="font-playfair text-lg font-bold text-gold tracking-widest leading-tight whitespace-nowrap overflow-hidden text-ellipsis px-2">Dr. Wahyitno, S.Pd., M.M.</h2>
             </div>
         </div>
@@ -514,7 +515,7 @@
     };
 
     function startCountdown() {
-        const eventDate = new Date("March 5, 2026 08:00:00").getTime();
+        const eventDate = new Date("March 5, 2026 08:30:00").getTime();
         setInterval(() => {
             const now = new Date().getTime();
             const diff = eventDate - now;
