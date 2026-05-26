@@ -31,8 +31,11 @@
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        // Konfigurasi Firebase lokal bawaan Dr. Abdul Rahman Safiih
-        const localFirebaseConfig = {
+        // Deteksi secara otomatis apakah aplikasi berjalan di dalam lingkungan Sandbox Canvas
+        const useEnvFirebase = typeof __firebase_config !== 'undefined';
+
+        // Konfigurasi dinamis (Gunakan variabel lingkungan jika tersedia untuk menghindari galat izin)
+        const firebaseConfig = useEnvFirebase ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyAWE4JJxwcADo3NnCBYuCiJuF7sMCW15ss",
             authDomain: "undangan-digital-abdul-rahman.firebaseapp.com",
             databaseURL: "https://undangan-digital-abdul-rahman-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -43,45 +46,44 @@
             measurementId: "G-GLRNT7FCES"
         };
 
-        // Sinkronisasi dinamis dengan variabel lingkungan (sangat penting untuk mencegah permission error)
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : localFirebaseConfig;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : "undangan-digital-abdul-rahman";
+        const appId = useEnvFirebase && typeof __app_id !== 'undefined' ? __app_id : "undangan-digital-abdul-rahman";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        
+        let db = null;
+        let auth = null;
         let isUsingFirebase = false;
 
-        // Data ucapan bawaan (mock data) untuk fallback jika koneksi diblokir
-        const mockRSVPs = [
-            { name: "Prof. Dr. H. Ahmad Susilo", relation: "Rekan Sejawat", message: "Selamat atas pencapaian gelar Doktornya, Pak Abdul Rahman Safiih. Perjuangan akademis luar biasa yang menginspirasi kita semua.", status: "Hadir", timestamp: new Date(Date.now() - 3600000).toISOString() },
-            { name: "Dr. Siti Aminah, M.Si.", relation: "Rekan Sejawat", message: "Selamat dan sukses Dr. Abdul Rahman Safiih! Semoga gelar barunya membawa berkah besar bagi dunia akademik dan keluarga.", status: "Hadir", timestamp: new Date(Date.now() - 7200000).toISOString() },
-            { name: "Rina Lestari, S.E.", relation: "Alumni / Instansi", message: "Selamat Bapak atas gelar barunya! Terima kasih atas bimbingan dan inspirasinya yang tiada henti selama ini.", status: "Hadir", timestamp: new Date(Date.now() - 14400000).toISOString() },
-            { name: "Hendri Kurniawan", relation: "Mahasiswa", message: "Bangga sekali mempunyai dosen panutan seperti Bapak. Selamat Dr. Abdul Rahman Safiih!", status: "Hadir", timestamp: new Date(Date.now() - 86400000).toISOString() }
-        ];
+        // Mengosongkan data bawaan (mock data) agar data dimulai dari 0 sesuai permintaan Anda
+        const mockRSVPs = [];
 
-        window.firebaseStore = { appId, auth, db };
+        window.firebaseStore = { appId };
 
         const initFirebase = async () => {
             try {
-                // RULE 3 & PRIORITAS TOKEN KUSTOM: Coba gunakan custom token lingkungan jika tersedia
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
                 
+                // 1. Menangani Proses Autentikasi Terlebih Dahulu
+                const initAuth = async () => {
+                    if (useEnvFirebase && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                };
+                await initAuth();
+
+                // 2. Pasang Listener Perubahan Auth State
                 onAuthStateChanged(auth, (user) => {
                     if (user) { 
                         isUsingFirebase = true;
-                        loadPublicRSVP(); 
+                        loadPublicRSVP(user); 
                     } else {
                         useFallback();
                     }
                 });
             } catch (error) { 
-                console.warn("Firebase Auth Error, beralih ke Fallback Mode:", error.message); 
+                console.warn("Firebase terblokir atau offline. Beralih ke mode lokal aman.", error.message); 
                 useFallback();
             }
         };
@@ -91,7 +93,6 @@
             loadFallbackRSVP();
         };
 
-        // Render data list ucapan dan menghitung statistik
         const renderRSVPList = (docs) => {
             let hadir = 0, ragu = 0, tidak = 0;
             
@@ -131,19 +132,17 @@
             }
         };
 
-        // Mendengarkan data RSVP secara real-time dari Firestore (Mengikuti RULE 1 & 2)
-        const loadPublicRSVP = () => {
-            if (!auth.currentUser) return;
+        const loadPublicRSVP = (user) => {
+            if (!user) return;
             const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
-            
             onSnapshot(colRef, (snapshot) => {
                 const docs = [];
                 snapshot.forEach(d => docs.push(d.data()));
-                // Menyortir data di memori klien (Mengikuti RULE 2 - No Complex Queries)
+                // Melakukan pengurutan secara lokal di memori JS (Mencegah error index Firestore)
                 docs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 renderRSVPList(docs);
             }, (error) => {
-                console.error("Gagal memuat Firestore, dialihkan ke Fallback.", error.message);
+                console.error("Gagal memuat Firestore, dialihkan ke Fallback.", error);
                 useFallback();
             });
         };
@@ -159,7 +158,7 @@
             }
         };
 
-        // Fungsi Kirim RSVP dengan sistem bercabang (Firestore / LocalStorage)
+        // Mengirim RSVP baru
         window.submitRSVP = async () => {
             const name = document.getElementById('rsvp-name').value.trim();
             const rel = document.getElementById('rsvp-relation').value;
@@ -189,7 +188,6 @@
                     await addDoc(colRef, rsvpData);
                     triggerSuccessFlow();
                 } catch (e) { 
-                    console.warn("Gagal menyimpan ke Firestore, menyimpan secara lokal:", e.message);
                     saveLocally(rsvpData);
                 } finally {
                     btn.disabled = false;
@@ -440,6 +438,12 @@
             border-color: rgba(223, 186, 115, 0.6);
             background: rgba(255, 255, 255, 0.08);
             box-shadow: 0 0 10px rgba(223, 186, 115, 0.2);
+        }
+
+        /* PERBAIKAN WARNA DROP DOWN OPTION */
+        select option {
+            background-color: #0c1b1c !important;
+            color: #ffffff !important;
         }
 
         .recap-item {
@@ -791,7 +795,9 @@
                 <div class="glass-panel p-4 text-left border-gold/20 space-y-3 mb-4 shadow-2xl bg-black/25">
                     <div class="grid grid-cols-2 gap-2">
                         <input id="rsvp-name" type="text" placeholder="Nama Lengkap" class="py-2.5">
-                        <select id="rsvp-relation" class="py-2.5">
+                        
+                        <!-- DROP DOWN RELATION DENGAN WARNA BAGUS DAN JELAS -->
+                        <select id="rsvp-relation" class="py-2.5 bg-[#0c1b1c] text-white border border-white/10 rounded-12">
                             <option value="Rekan Sejawat">Rekan Sejawat</option>
                             <option value="Keluarga">Keluarga</option>
                             <option value="Mahasiswa">Mahasiswa</option>
@@ -800,7 +806,8 @@
                     </div>
                     <textarea id="rsvp-message" placeholder="Tulis doa restu atau ucapan terbaik..." rows="2" class="py-2.5"></textarea>
                     
-                    <select id="rsvp-status" class="py-2.5">
+                    <!-- DROP DOWN STATUS DENGAN WARNA BAGUS DAN JELAS -->
+                    <select id="rsvp-status" class="py-2.5 bg-[#0c1b1c] text-white border border-white/10 rounded-12">
                         <option value="" disabled selected>Konfirmasi Kehadiran</option>
                         <option value="Hadir">Insya Allah Hadir</option>
                         <option value="Masih Ragu">Masih Ragu</option>
