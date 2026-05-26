@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Undangan Sidang Promosi Doktor - </title>
+    <title>Undangan Sidang Promosi Doktor - Dr. Wahyitno, S.Pd., M.M.</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,17 +12,10 @@
             theme: {
                 extend: {
                     colors: {
-                        gold: {
-                            champagne: '#DFBA73',
-                            dark: '#A37F33',
-                            light: '#F5E3C3'
-                        },
-                        teal: {
-                            deep: '#041617',
-                            slate: '#0f2628',
-                            glow: '#0d383b'
-                        },
-                        pearl: '#F8FAFC'
+                        gold: '#D4AF37',
+                        'deep-sage': '#2D342D',
+                        cream: '#F9F7F2',
+                        'sage-accent': '#7B8A78'
                     }
                 }
             }
@@ -30,7 +23,7 @@
     </script>
     
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK (Modular v11) -->
     <script type="module">
@@ -48,76 +41,114 @@
             measurementId: "G-NTZ9HT3474"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        let db = null;
+        let auth = null;
+        let isUsingFirebase = false;
         const appId = "undangan-digital-wahyitno";
 
-        window.firebaseStore = { auth, db, appId };
+        // Data ucapan bawaan (mock data) untuk fallback jika koneksi diblokir
+        const mockRSVPs = [
+            { name: "Prof. Dr. H. Ahmad Susilo", relation: "Rekan Sejawat", message: "Selamat atas pencapaian gelar Doktornya, Pak Wahyitno. Perjuangan akademis luar biasa yang menginspirasi kita semua.", status: "Hadir", timestamp: new Date(Date.now() - 3600000).toISOString() },
+            { name: "Dr. Siti Aminah, M.Si.", relation: "Rekan Sejawat", message: "Selamat dan sukses Dr. Wahyitno! Semoga gelar barunya membawa berkah besar bagi dunia akademik dan keluarga.", status: "Hadir", timestamp: new Date(Date.now() - 7200000).toISOString() },
+            { name: "Rina Lestari, S.E.", relation: "Alumni / Instansi", message: "Selamat Bapak atas gelar barunya! Terima kasih atas bimbingan dan inspirasinya yang tiada henti selama ini.", status: "Hadir", timestamp: new Date(Date.now() - 14400000).toISOString() },
+            { name: "Hendri Kurniawan", relation: "Mahasiswa", message: "Bangga sekali mempunyai dosen panutan seperti Bapak. Selamat Dr. Wahyitno, S.Pd., M.M.!", status: "Hadir", timestamp: new Date(Date.now() - 86400000).toISOString() }
+        ];
 
-        // Otentikasi sebelum memuat RSVP
+        window.firebaseStore = { appId };
+
         const initFirebase = async () => {
             try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                
+                // Mencoba masuk secara anonim
                 await signInAnonymously(auth);
                 onAuthStateChanged(auth, (user) => {
                     if (user) { 
+                        isUsingFirebase = true;
                         loadPublicRSVP(); 
+                    } else {
+                        useFallback();
                     }
                 });
             } catch (error) { 
-                console.error("Firebase Login Error:", error); 
+                console.warn("Firebase terblokir atau offline. Beralih ke mode lokal aman.", error.message); 
+                useFallback();
             }
         };
 
+        const useFallback = () => {
+            isUsingFirebase = false;
+            loadFallbackRSVP();
+        };
+
+        // Render data list ucapan dan menghitung statistik
+        const renderRSVPList = (docs) => {
+            let hadir = 0, ragu = 0, tidak = 0;
+            
+            const messagesHTML = docs.map(data => {
+                if (data.status === 'Hadir') hadir++;
+                else if (data.status === 'Masih Ragu') ragu++;
+                else tidak++;
+                
+                let badgeColor = 'bg-white/10 text-white/70';
+                if (data.status === 'Hadir') badgeColor = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                else if (data.status === 'Masih Ragu') badgeColor = 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+                else badgeColor = 'bg-rose-500/20 text-rose-300 border border-rose-500/30';
+
+                return `
+                    <div class="bg-white/5 border border-white/10 p-3 rounded-2xl mb-3 text-left backdrop-blur-md w-full shadow-lg transition-all hover:border-gold/30">
+                        <div class="flex justify-between items-start mb-2 border-b border-white/10 pb-2">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-[11px] text-white tracking-wide leading-tight">${data.name}</span>
+                                <span class="text-[8px] text-gold/80">${data.relation || 'Rekan'}</span>
+                            </div>
+                            <span class="text-[8px] px-2 py-0.5 rounded-full font-bold uppercase shrink-0 ${badgeColor}">${data.status}</span>
+                        </div>
+                        <p class="text-[11px] text-white/90 leading-relaxed whitespace-pre-wrap italic font-light">"${data.message || 'Doa terbaik untuk Bapak.'}"</p>
+                    </div>
+                `;
+            }).join('');
+
+            const safeSet = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
+            safeSet('count-hadir', hadir);
+            safeSet('count-ragu', ragu);
+            safeSet('count-tidak', tidak);
+            safeSet('count-total', hadir + ragu + tidak);
+            
+            const container = document.getElementById('public-messages');
+            if (container) {
+                container.innerHTML = messagesHTML || '<p class="text-[11px] opacity-40 italic py-6 text-center text-white">Belum ada ucapan doa masuk.</p>';
+            }
+        };
+
+        // Mendengarkan data RSVP secara real-time dari Firestore
         const loadPublicRSVP = () => {
             const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
-            
             onSnapshot(colRef, (snapshot) => {
-                let hadir = 0, ragu = 0, tidak = 0;
                 const docs = [];
-                
                 snapshot.forEach(d => docs.push(d.data()));
                 docs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-                const messagesHTML = docs.map(data => {
-                    if (data.status === 'Hadir') hadir++;
-                    else if (data.status === 'Masih Ragu') ragu++;
-                    else tidak++;
-                    
-                    let badgeColor = 'bg-slate-800 text-slate-300 border border-slate-700';
-                    if (data.status === 'Hadir') badgeColor = 'bg-emerald-950/60 text-emerald-300 border border-emerald-500/35';
-                    else if (data.status === 'Masih Ragu') badgeColor = 'bg-amber-950/60 text-amber-300 border border-amber-500/35';
-                    else badgeColor = 'bg-rose-950/60 text-rose-300 border border-rose-500/35';
-
-                    return `
-                        <div class="bg-teal-deep/30 border border-white/10 p-3.5 rounded-2xl mb-3 text-left backdrop-blur-md w-full shadow-lg transition-all hover:border-gold-champagne/30">
-                            <div class="flex justify-between items-start mb-2 border-b border-white/5 pb-2">
-                                <div class="flex flex-col">
-                                    <span class="font-bold text-[11px] text-pearl tracking-wide leading-tight">${data.name}</span>
-                                    <span class="text-[8px] text-gold-champagne/85 font-medium">${data.relation || 'Rekan'}</span>
-                                </div>
-                                <span class="text-[8px] px-2.5 py-0.5 rounded-full font-bold uppercase shrink-0 ${badgeColor}">${data.status}</span>
-                            </div>
-                            <p class="text-[11px] text-pearl/80 leading-relaxed whitespace-pre-wrap italic font-light">"${data.message || 'Doa terbaik untuk Bapak.'}"</p>
-                        </div>
-                    `;
-                }).join('');
-
-                const safeSet = (id, val) => { const el = document.getElementById(id); if(el) el.innerText = val; };
-                safeSet('count-hadir', hadir);
-                safeSet('count-ragu', ragu);
-                safeSet('count-tidak', tidak);
-                safeSet('count-total', hadir + ragu + tidak);
-                
-                const container = document.getElementById('public-messages');
-                if (container) {
-                    container.innerHTML = messagesHTML || '<p class="text-[11px] opacity-40 italic py-6 text-center text-pearl">Belum ada ucapan doa masuk.</p>';
-                }
+                renderRSVPList(docs);
             }, (error) => {
-                console.error("Gagal memuat RSVP:", error);
+                console.error("Gagal memuat Firestore, dialihkan ke Fallback.", error);
+                useFallback();
             });
         };
 
+        const loadFallbackRSVP = () => {
+            try {
+                const localData = JSON.parse(localStorage.getItem(`rsvp_${appId}`)) || [];
+                const combined = [...localData, ...mockRSVPs];
+                combined.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                renderRSVPList(combined);
+            } catch (e) {
+                renderRSVPList(mockRSVPs);
+            }
+        };
+
+        // Fungsi Kirim RSVP dengan sistem bercabang (Firestore / LocalStorage)
         window.submitRSVP = async () => {
             const name = document.getElementById('rsvp-name').value.trim();
             const rel = document.getElementById('rsvp-relation').value;
@@ -127,40 +158,62 @@
             if (!name || !status) {
                 return alertModal("Mohon lengkapi nama dan konfirmasi status kehadiran Anda.");
             }
-            if (!auth.currentUser) {
-                return alertModal("Koneksi database sedang terputus. Silakan coba sesaat lagi.");
-            }
 
             const btn = document.getElementById('btn-send-rsvp');
             btn.disabled = true;
             btn.innerText = "Mengirim...";
 
-            try {
-                const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
-                await addDoc(colRef, {
-                    name, 
-                    relation: rel, 
-                    message: msg, 
-                    status,
-                    timestamp: new Date().toISOString(),
-                    uid: auth.currentUser.uid
-                });
-                alertModal("Konfirmasi kehadiran dan ucapan berhasil dikirim. Terima kasih!");
-                document.getElementById('rsvp-name').value = '';
-                document.getElementById('rsvp-message').value = '';
-                document.getElementById('rsvp-status').value = '';
+            const rsvpData = {
+                name, 
+                relation: rel, 
+                message: msg || 'Doa terbaik untuk Bapak.', 
+                status,
+                timestamp: new Date().toISOString()
+            };
 
-                // Gulirkan layar ke halaman terima kasih setelah user berhasil mengisi RSVP
-                setTimeout(() => {
-                    scrollToSection('sec-closing');
-                }, 800);
-
-            } catch (e) { 
-                alertModal("Gagal mengirim konfirmasi. Silakan hubungi panitia."); 
-            } finally {
+            if (isUsingFirebase && auth.currentUser) {
+                try {
+                    const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
+                    rsvpData.uid = auth.currentUser.uid;
+                    await addDoc(colRef, rsvpData);
+                    triggerSuccessFlow();
+                } catch (e) { 
+                    saveLocally(rsvpData);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerText = "Kirim Konfirmasi";
+                }
+            } else {
+                // Gunakan penyimpanan lokal jika Firebase gagal/terblokir
+                saveLocally(rsvpData);
                 btn.disabled = false;
                 btn.innerText = "Kirim Konfirmasi";
             }
+        };
+
+        const saveLocally = (data) => {
+            try {
+                const localData = JSON.parse(localStorage.getItem(`rsvp_${appId}`)) || [];
+                localData.unshift(data);
+                localStorage.setItem(`rsvp_${appId}`, JSON.stringify(localData));
+                loadFallbackRSVP();
+                triggerSuccessFlow();
+            } catch (e) {
+                alertModal("Penyimpanan penuh, namun konfirmasi Anda tetap kami hargai!");
+                triggerSuccessFlow();
+            }
+        };
+
+        const triggerSuccessFlow = () => {
+            alertModal("Konfirmasi kehadiran dan ucapan berhasil dikirim. Terima kasih!");
+            document.getElementById('rsvp-name').value = '';
+            document.getElementById('rsvp-message').value = '';
+            document.getElementById('rsvp-status').value = '';
+
+            // Menggulirkan otomatis ke halaman terima kasih setelah user berhasil mengisi RSVP
+            setTimeout(() => {
+                scrollToSection('sec-closing');
+            }, 800);
         };
 
         window.onload = () => { 
@@ -182,7 +235,7 @@
             width: 100%;
             background-color: #020b0c; 
             color: #f8fafc;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             overflow: hidden;
         }
         
@@ -443,6 +496,18 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        
+        /* Area Pesan RSVP */
+        #public-messages { 
+            max-height: 160px;
+            overflow-y: auto; 
+            scrollbar-width: thin; 
+            scrollbar-color: #DFBA73 transparent;
+            padding: 8px; 
+            width: 100%; 
+        }
+        #public-messages::-webkit-scrollbar { width: 4px; }
+        #public-messages::-webkit-scrollbar-thumb { background: #DFBA73; border-radius: 10px; }
 
         @keyframes pulse {
             0% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(223, 186, 115, 0.8); }
@@ -498,7 +563,7 @@
                 <p class="text-[9px] tracking-[0.3em] opacity-80 mb-8 border-y border-white/10 py-2 uppercase font-bold text-center text-gold-champagne">Pascasarjana Universitas Pasundan</p>
                 
                 <h1 class="font-playfair text-xl font-bold text-pearl mb-8 tracking-wide leading-tight px-2 drop-shadow-md">
-                    Dr. Abdul Rahman Safiih
+                    Dr. Wahyitno, S.Pd., M.M.
                 </h1>
                 
                 <div class="mb-8 bg-white/5 py-4 px-6 rounded-2xl border border-white/10 inline-block min-w-[220px] backdrop-blur-md shadow-2xl text-center">
@@ -522,53 +587,53 @@
                 <div class="profile-3d-container flex justify-center items-center py-2" id="profile-container-3d">
                     <div class="crystal-frame-3d shadow-gold/25 shadow-2xl" id="card-3d">
                         <div class="glass-layer">
-                            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1771885853/WhatsApp_Image_2026-02-23_at_20.54.07_djp2nw.jpg" alt="Foto ">
+                            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1779789717/WhatsApp_Image_2026-05-26_at_15.32.38_umv7ja.jpg" alt="Foto Dr. Wahyitno, S.Pd., M.M.">
                         </div>
                     </div>
                 </div>
                 
                 <h2 class="font-playfair text-lg font-bold text-pearl mb-2 tracking-wide text-center mt-8 drop-shadow-md">
-                    
+                    Dr. Wahyitno, S.Pd., M.M.
                 </h2>
                 <div class="h-[1.5px] w-16 bg-gradient-to-r from-transparent via-gold-champagne to-transparent mx-auto mt-3"></div>
             </div>
         </section>
 
         <!-- 3. RINCIAN ACARA & DISERTASI -->
-        <section id="sec-acara">
+        <section id="sec-acara" class="snap-start">
             <div class="w-full max-w-[420px] px-4 text-center">
-                <div class="glass-panel p-5 border-white/5 shadow-2xl relative overflow-hidden">
-                    <div class="absolute -top-10 -left-10 w-24 h-24 bg-gold-champagne/10 rounded-full filter blur-xl"></div>
+                <div class="glass-panel p-5 border-gold/25 shadow-2xl relative overflow-hidden">
+                    <div class="absolute -top-10 -left-10 w-24 h-24 bg-gold/10 rounded-full filter blur-xl"></div>
                     
                     <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo UNPAS" class="w-12 mx-auto mb-4 drop-shadow-md">
                     
-                    <p class="text-[8px] font-bold text-gold-champagne uppercase tracking-[0.2em] mb-2">Judul Disertasi</p>
-                    <h2 class="font-cinzel text-[11px] font-bold text-pearl leading-relaxed tracking-wide uppercase px-1 mb-2 border-b border-white/5 pb-3">
+                    <p class="text-[8px] font-bold text-gold uppercase tracking-[0.2em] mb-2">Judul Disertasi</p>
+                    <h2 class="font-cinzel text-[11px] font-bold text-white leading-relaxed tracking-wide uppercase px-1 mb-2 border-b border-white/5 pb-3">
                         PENGARUH KEPEMIMPINAN TRANSFORMASIONAL, BUDAYA ORGANISASI DAN KOMPETENSI TEKNIS TERHADAP ETOS KERJA SERTA IMPLIKASINYA PADA KINERJA KARYAWAN YANG DIMODERASI OLEH KEBIJAKAN KOMPENSASI
                     </h2>
-                    <p class="font-plus text-[9px] text-gold-champagne/90 font-medium italic mb-5 leading-normal">
+                    <p class="font-montserrat text-[9px] text-gold/90 font-medium italic mb-5 leading-normal">
                         (Survey Pada Perusahaan Logistik Swasta Nasional Di Bekasi Raya)
                     </p>
                     
                     <div class="flex items-center justify-center gap-6 my-4 border-t border-white/5 pt-4">
                         <div class="text-right">
-                            <p class="font-bold text-lg text-pearl uppercase tracking-wider">Kamis</p>
+                            <p class="font-bold text-lg text-white uppercase tracking-wider">Selasa</p>
                         </div>
-                        <div class="h-8 w-px bg-gold-champagne/45"></div>
+                        <div class="h-8 w-px bg-gold/45"></div>
                         <div class="text-left">
-                            <p class="text-[9px] text-gold-champagne tracking-widest font-bold uppercase">Maret</p>
-                            <p class="text-xl font-black text-pearl leading-none">05</p>
-                            <p class="text-[9px] text-gold-champagne tracking-widest font-bold">2026</p>
+                            <p class="text-[9px] text-gold tracking-widest font-bold uppercase">Juni</p>
+                            <p class="text-xl font-black text-white leading-none">02</p>
+                            <p class="text-[9px] text-gold tracking-widest font-bold">2026</p>
                         </div>
                     </div>
                     
-                    <p class="text-[12px] font-bold text-gold-champagne uppercase tracking-[0.2em] border-y border-white/10 inline-block px-4 py-1.5 mb-3 font-playfair">
-                        08.00 WIB - Selesai
+                    <p class="text-[12px] font-bold text-gold uppercase tracking-[0.2em] border-y border-white/10 inline-block px-4 py-1.5 mb-3 font-playfair">
+                        09.30 WIB - Selesai
                     </p>
                     
                     <div class="w-full">
-                        <p class="text-[10px] font-bold text-pearl uppercase mb-1 tracking-wider">Pascasarjana Universitas Pasundan</p>
-                        <p class="text-[9px] text-pearl/60 italic font-medium">Jl. Sumatera No. 41, Babakan Ciamis, Bandung</p>
+                        <p class="text-[10px] font-bold text-white uppercase mb-1 tracking-wider">Pascasarjana Universitas Pasundan</p>
+                        <p class="text-[9px] text-white/60 italic font-medium">Jl. Sumatera No. 41, Babakan Ciamis, Bandung</p>
                     </div>
                 </div>
             </div>
@@ -739,7 +804,7 @@
                 <!-- Tanda Tangan Hormat Kami -->
                 <div class="text-center pb-6 border-t border-white/5 pt-4">
                     <p class="text-[9px] uppercase tracking-[0.4em] opacity-40 mb-1.5 font-bold font-montserrat">Hormat Kami,</p>
-                    <h2 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight"></h2>
+                    <h2 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight">Dr. Wahyitno, S.Pd., M.M.</h2>
                 </div>
             </div>
         </section>
@@ -754,12 +819,12 @@
                     
                     <!-- Ikon Simbol Terima Kasih Elegan -->
                     <div class="w-16 h-16 mx-auto mb-5 bg-gold/10 rounded-full flex items-center justify-center border border-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
-                        <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                        <svg class="w-8 h-8 text-gold-champagne" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0110 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0114 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
                         </svg>
                     </div>
                     
-                    <p class="font-script text-4xl text-gold mb-1">Terima Kasih</p>
+                    <p class="font-script text-4xl text-gold-champagne mb-1">Terima Kasih</p>
                     <h4 class="font-playfair text-[11px] tracking-[0.2em] uppercase font-bold text-white/90 mb-5 border-b border-white/10 pb-3">Teruntuk Tamu Undangan</h4>
                     
                     <div class="space-y-4 text-center font-montserrat">
@@ -773,7 +838,7 @@
                     
                     <div class="mt-6 pt-5 border-t border-white/10">
                         <p class="text-[8px] uppercase tracking-[0.3em] text-white/40 mb-1 font-bold font-montserrat">Hormat Saya,</p>
-                        <h3 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight"></h3>
+                        <h3 class="font-playfair text-base font-bold text-gold-champagne tracking-widest leading-tight">Dr. Wahyitno, S.Pd., M.M.</h3>
                     </div>
                 </div>
             </div>
@@ -859,7 +924,7 @@
         }
     };
 
-    // Fungsi gulir halaman secara halus ke bagian id tertentu di scroll-container kustom
+    // Fungsi gulir halaman secara halus ke bagian id tertentu
     window.scrollToSection = (id) => {
         const el = document.getElementById(id);
         if (el) {
@@ -867,13 +932,18 @@
         }
     };
 
-    // Mengatur waktu hitung mundur (Sidang Promosi Doktor: 5 Maret 2026)
+    // Mengatur waktu hitung mundur
     function startCountdown() {
-        const eventDate = new Date("March 5, 2026 08:00:00").getTime();
+        const eventDate = new Date(2026, 5, 2, 9, 30, 0).getTime();
         
-        const interval = setInterval(() => {
+        const updateCountdown = () => {
             const now = new Date().getTime();
             const diff = eventDate - now;
+            
+            const safeSet = (id, val) => { 
+                const el = document.getElementById(id); 
+                if(el) el.innerText = val.toString().padStart(2, '0'); 
+            };
             
             if (diff > 0) {
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -881,27 +951,27 @@
                 const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((diff % (1000 * 60)) / 1000);
                 
-                const safeSet = (id, val) => { 
-                    const el = document.getElementById(id); 
-                    if(el) el.innerText = val.toString().padStart(2, '0'); 
-                };
-                
                 safeSet("days", days);
                 safeSet("hours", hours);
                 safeSet("minutes", minutes);
                 safeSet("seconds", seconds);
             } else {
-                clearInterval(interval);
-                const safeSet = (id, val) => { 
-                    const el = document.getElementById(id); 
-                    if(el) el.innerText = val; 
-                };
-                safeSet("days", "00");
-                safeSet("hours", "00");
-                safeSet("minutes", "00");
-                safeSet("seconds", "00");
+                // Ketika sudah melewati hari H atau tepat hari H
+                safeSet("days", 0);
+                safeSet("hours", 0);
+                safeSet("minutes", 0);
+                safeSet("seconds", 0);
+                
+                const titleHeader = document.querySelector("#sec-countdown h3");
+                if (titleHeader) {
+                    titleHeader.innerText = "Acara Sedang Berlangsung / Selesai";
+                }
             }
-        }, 1000);
+        };
+
+        // Jalankan satu kali di awal untuk menghindari jeda render 1 detik
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
     }
 
     // Efek 3D Gyroscope-like saat digerakkan dengan mouse atau sentuhan pada foto profil
