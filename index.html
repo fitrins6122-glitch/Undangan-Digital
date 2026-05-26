@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Undangan Sidang Promosi Doktor - Dr. Wahyitno, S.Pd., M.M.</title>
+    <title>Undangan Sidang Promosi Doktor - Dr. Abdul Rahman Safiih</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -48,10 +48,10 @@
 
         // Data ucapan bawaan (mock data) untuk fallback jika koneksi diblokir
         const mockRSVPs = [
-            { name: "Prof. Dr. H. Ahmad Susilo", relation: "Rekan Sejawat", message: "Selamat atas pencapaian gelar Doktornya, Pak Wahyitno. Perjuangan akademis luar biasa yang menginspirasi kita semua.", status: "Hadir", timestamp: new Date(Date.now() - 3600000).toISOString() },
-            { name: "Dr. Siti Aminah, M.Si.", relation: "Rekan Sejawat", message: "Selamat dan sukses Dr. Wahyitno! Semoga gelar barunya membawa berkah besar bagi dunia akademik dan keluarga.", status: "Hadir", timestamp: new Date(Date.now() - 7200000).toISOString() },
+            { name: "Prof. Dr. H. Ahmad Susilo", relation: "Rekan Sejawat", message: "Selamat atas pencapaian gelar Doktornya, Pak Abdul Rahman Safiih. Perjuangan akademis luar biasa yang menginspirasi kita semua.", status: "Hadir", timestamp: new Date(Date.now() - 3600000).toISOString() },
+            { name: "Dr. Siti Aminah, M.Si.", relation: "Rekan Sejawat", message: "Selamat dan sukses Dr. Abdul Rahman Safiih! Semoga gelar barunya membawa berkah besar bagi dunia akademik dan keluarga.", status: "Hadir", timestamp: new Date(Date.now() - 7200000).toISOString() },
             { name: "Rina Lestari, S.E.", relation: "Alumni / Instansi", message: "Selamat Bapak atas gelar barunya! Terima kasih atas bimbingan dan inspirasinya yang tiada henti selama ini.", status: "Hadir", timestamp: new Date(Date.now() - 14400000).toISOString() },
-            { name: "Hendri Kurniawan", relation: "Mahasiswa", message: "Bangga sekali mempunyai dosen panutan seperti Bapak. Selamat Dr. Wahyitno, S.Pd., M.M.!", status: "Hadir", timestamp: new Date(Date.now() - 86400000).toISOString() }
+            { name: "Hendri Kurniawan", relation: "Mahasiswa", message: "Bangga sekali mempunyai dosen panutan seperti Bapak. Selamat Dr. Abdul Rahman Safiih!", status: "Hadir", timestamp: new Date(Date.now() - 86400000).toISOString() }
         ];
 
         window.firebaseStore = { appId };
@@ -62,7 +62,6 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
                 
-                // Mencoba masuk secara anonim
                 await signInAnonymously(auth);
                 onAuthStateChanged(auth, (user) => {
                     if (user) { 
@@ -184,7 +183,6 @@
                     btn.innerText = "Kirim Konfirmasi";
                 }
             } else {
-                // Gunakan penyimpanan lokal jika Firebase gagal/terblokir
                 saveLocally(rsvpData);
                 btn.disabled = false;
                 btn.innerText = "Kirim Konfirmasi";
@@ -210,7 +208,6 @@
             document.getElementById('rsvp-message').value = '';
             document.getElementById('rsvp-status').value = '';
 
-            // Menggulirkan otomatis ke halaman terima kasih setelah user berhasil mengisi RSVP
             setTimeout(() => {
                 scrollToSection('sec-closing');
             }, 800);
@@ -563,7 +560,7 @@
                 <p class="text-[9px] tracking-[0.3em] opacity-80 mb-8 border-y border-white/10 py-2 uppercase font-bold text-center text-gold-champagne">Pascasarjana Universitas Pasundan</p>
                 
                 <h1 class="font-playfair text-xl font-bold text-pearl mb-8 tracking-wide leading-tight px-2 drop-shadow-md">
-                    Dr. Wahyitno, S.Pd., M.M.
+                    Dr. Abdul Rahman Safiih
                 </h1>
                 
                 <div class="mb-8 bg-white/5 py-4 px-6 rounded-2xl border border-white/10 inline-block min-w-[220px] backdrop-blur-md shadow-2xl text-center">
@@ -576,70 +573,80 @@
         </section>
 
         <!-- 2. PROFIL PENELITI -->
-        <section id="sec-profil">
-            <div class="text-center w-full px-6 -mt-2">
-                <p class="font-script text-4xl text-gold-champagne mb-4 text-center">Assalamu’alaikum Wr. Wb.</p>
-                <p class="text-[11px] leading-relaxed text-pearl/85 mb-6 text-center px-4 font-light">
-                    Dengan penuh rasa syukur, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri dan memberikan doa restu pada Sidang Promosi Doktor:
-                </p>
-                
-                <!-- Area 3D interaktif -->
-                <div class="profile-3d-container flex justify-center items-center py-2" id="profile-container-3d">
+    <section id="sec-profil" class="snap-start">
+        <div class="text-center w-full px-6 -mt-2">
+            <p class="font-script text-4xl text-gold mb-4 text-center">Assalamu’alaikum Wr. Wb.</p>
+            <p class="text-[11px] leading-relaxed text-white/85 mb-6 text-center px-4 font-light">
+                Mengundang dengan hormat Bapak/Ibu/Saudara untuk menghadiri Ujian Sidang Promosi mencapai gelar Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan
+            </p>
+            
+            <!-- Area 3D interaktif -->
+            <div class="profile-3d-container flex justify-center items-center py-2" id="profile-container-3d">
                     <div class="crystal-frame-3d shadow-gold/25 shadow-2xl" id="card-3d">
                         <div class="glass-layer">
-                            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1779789717/WhatsApp_Image_2026-05-26_at_15.32.38_umv7ja.jpg" alt="Foto Dr. Wahyitno, S.Pd., M.M.">
+                            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1779789717/WhatsApp_Image_2026-05-26_at_15.32.38_umv7ja.jpg" alt="Foto Dr. Abdul Rahman Safiih">
                         </div>
                     </div>
                 </div>
                 
                 <h2 class="font-playfair text-lg font-bold text-pearl mb-2 tracking-wide text-center mt-8 drop-shadow-md">
-                    Dr. Wahyitno, S.Pd., M.M.
+                    Dr. Abdul Rahman Safiih
                 </h2>
                 <div class="h-[1.5px] w-16 bg-gradient-to-r from-transparent via-gold-champagne to-transparent mx-auto mt-3"></div>
             </div>
         </section>
 
         <!-- 3. RINCIAN ACARA & DISERTASI -->
-        <section id="sec-acara" class="snap-start">
-            <div class="w-full max-w-[420px] px-4 text-center">
-                <div class="glass-panel p-5 border-gold/25 shadow-2xl relative overflow-hidden">
-                    <div class="absolute -top-10 -left-10 w-24 h-24 bg-gold/10 rounded-full filter blur-xl"></div>
-                    
-                    <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo UNPAS" class="w-12 mx-auto mb-4 drop-shadow-md">
-                    
-                    <p class="text-[8px] font-bold text-gold uppercase tracking-[0.2em] mb-2">Judul Disertasi</p>
-                    <h2 class="font-cinzel text-[11px] font-bold text-white leading-relaxed tracking-wide uppercase px-1 mb-2 border-b border-white/5 pb-3">
-                        PENGARUH KEPEMIMPINAN TRANSFORMASIONAL, BUDAYA ORGANISASI DAN KOMPETENSI TEKNIS TERHADAP ETOS KERJA SERTA IMPLIKASINYA PADA KINERJA KARYAWAN YANG DIMODERASI OLEH KEBIJAKAN KOMPENSASI
-                    </h2>
-                    <p class="font-montserrat text-[9px] text-gold/90 font-medium italic mb-5 leading-normal">
-                        (Survey Pada Perusahaan Logistik Swasta Nasional Di Bekasi Raya)
+    <section id="sec-acara" class="snap-start">
+        <div class="w-full max-w-[420px] px-4 text-center">
+            <div class="glass-panel p-5 border-gold/25 shadow-2xl relative overflow-hidden">
+                <div class="absolute -top-10 -left-10 w-24 h-24 bg-gold/10 rounded-full filter blur-xl"></div>
+                
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo UNPAS" class="w-12 mx-auto mb-4 drop-shadow-md">
+                
+                <p class="text-[8px] font-bold text-gold uppercase tracking-[0.2em] mb-2">Judul Disertasi</p>
+                <h2 class="font-cinzel text-[11px] font-bold text-white leading-relaxed tracking-wide uppercase px-1 mb-2 border-b border-white/5 pb-3">
+                    DETERMINAN KEPUASAN KERJA DAN PENGARUHNYA TERHADAP KOMITMEN PADA PROFESI DOSEN YANG DIMODERASI OLEH TUNJANGAN FUNGSIONAL DOSEN
+                </h2>
+                <p class="font-montserrat text-[9px] text-gold/90 font-medium italic mb-4 leading-normal">
+                    (SURVEY PADA PTS PROGRAM STUDI S1 MANAJEMEN DI TANGERANG RAYA)
+                </p>
+                
+                <!-- Terjemahan Bahasa Inggris -->
+                <div class="border-t border-white/5 pt-3 mb-4">
+                    <p class="text-[9px] text-white/50 leading-normal italic font-light">
+                        DETERMINANTS OF JOB SATISFACTION AND ITS INFLUENCE ON LECTURER PROFESSIONAL COMMITMENT, MODERATED BY LECTURER FUNCTIONAL ALLOWANCES
                     </p>
-                    
-                    <div class="flex items-center justify-center gap-6 my-4 border-t border-white/5 pt-4">
-                        <div class="text-right">
-                            <p class="font-bold text-lg text-white uppercase tracking-wider">Selasa</p>
-                        </div>
-                        <div class="h-8 w-px bg-gold/45"></div>
-                        <div class="text-left">
-                            <p class="text-[9px] text-gold tracking-widest font-bold uppercase">Juni</p>
-                            <p class="text-xl font-black text-white leading-none">02</p>
-                            <p class="text-[9px] text-gold tracking-widest font-bold">2026</p>
-                        </div>
+                    <p class="text-[8px] text-gold/70 italic font-light mt-1">
+                        (SURVEY OF PRIVATE UNIVERSITIES WITH UNDERGRADUATE MANAGEMENT PROGRAMS IN GREATER TANGERANG)
+                    </p>
+                </div>
+                
+                <div class="flex items-center justify-center gap-6 my-4 border-t border-white/5 pt-4">
+                    <div class="text-right">
+                        <p class="font-bold text-lg text-white uppercase tracking-wider">Selasa</p>
                     </div>
-                    
-                    <p class="text-[12px] font-bold text-gold uppercase tracking-[0.2em] border-y border-white/10 inline-block px-4 py-1.5 mb-3 font-playfair">
-                        09.30 WIB - Selesai
-                    </p>
-                    
-                    <div class="w-full">
-                        <p class="text-[10px] font-bold text-white uppercase mb-1 tracking-wider">Pascasarjana Universitas Pasundan</p>
-                        <p class="text-[9px] text-white/60 italic font-medium">Jl. Sumatera No. 41, Babakan Ciamis, Bandung</p>
+                    <div class="h-8 w-px bg-gold/45"></div>
+                    <div class="text-left">
+                        <p class="text-[9px] text-gold tracking-widest font-bold uppercase">Juni</p>
+                        <p class="text-xl font-black text-white leading-none">02</p>
+                        <p class="text-[9px] text-gold tracking-widest font-bold">2026</p>
                     </div>
                 </div>
+                
+                <p class="text-[12px] font-bold text-gold uppercase tracking-[0.2em] border-y border-white/10 inline-block px-4 py-1.5 mb-3 font-playfair">
+                    09.30 WIB - Selesai
+                </p>
+                
+                <div class="w-full">
+                    <p class="text-[10px] font-bold text-white uppercase mb-1 tracking-wider">Pascasarjana Universitas Pasundan</p>
+                    <p class="text-[9px] text-white/60 italic font-medium">Jl. Sumatera No. 41, Babakan Ciamis, Bandung</p>
+                </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 4. PENGHITUNG MUNDUR (COUNTDOWN) -->
+    <!-- 4. PENGHITUNG MUNDUR (COUNTDOWN) -->
         <section id="sec-countdown">
             <div class="w-full max-w-[420px] text-center px-6">
                 <h3 class="font-cinzel text-xl font-bold text-gold-champagne mb-8 tracking-[0.3em] uppercase opacity-90 italic">Menghitung Hari</h3>
@@ -670,62 +677,58 @@
         </section>
 
         <!-- 5. DEWAN AKADEMIK (PROMOTOR & PENGUJI) -->
-        <section id="sec-promotor" class="sec-scrollable">
-            <div class="w-full max-w-[420px] px-6 text-center">
-                <h3 class="font-playfair text-lg font-bold text-gold-champagne mb-5 uppercase tracking-[0.25em] border-b border-gold-champagne/20 pb-2 italic">Dewan Akademik</h3>
-                
-                <div class="space-y-4">
-                    <!-- Promotor & Co-Promotor Card -->
-                    <div class="glass-panel p-4 bg-teal-deep/35 text-left border-white/5 shadow-xl relative overflow-hidden">
-                        <div class="absolute right-0 top-0 w-16 h-16 bg-gold-champagne/5 rounded-full filter blur-md"></div>
-                        <p class="text-[9px] text-gold-champagne font-bold uppercase tracking-[0.3em] mb-1 opacity-90">Promotor</p>
-                        <p class="font-bold text-[12px] text-pearl tracking-wider font-playfair leading-tight mb-3">Prof. Dr. H. Sidik Priadana, M.S.</p>
-                        
-                        <div class="h-[1px] w-full bg-white/10 my-2"></div>
-                        
-                        <p class="text-[9px] text-gold-champagne font-bold uppercase tracking-[0.3em] mb-1 opacity-90">Co-Promotor</p>
-                        <p class="font-bold text-[12px] text-pearl tracking-wider font-playfair leading-tight">Prof. Dr. H. Dedi Hadian, M.M.</p>
-                    </div>
+    <section id="sec-promotor" class="sec-scrollable snap-start">
+        <div class="w-full max-w-[420px] px-6 text-center">
+            <h3 class="font-playfair text-lg font-bold text-gold mb-5 uppercase tracking-[0.25em] border-b border-gold/20 pb-2 italic">Dewan Akademik</h3>
+            
+            <div class="space-y-4">
+                <!-- Promotor & Co-Promotor Card -->
+                <div class="glass-panel p-4 bg-black/40 text-left border-gold/20 shadow-xl relative overflow-hidden">
+                    <div class="absolute right-0 top-0 w-16 h-16 bg-gold/5 rounded-full filter blur-md"></div>
+                    <p class="text-[9px] text-gold font-bold uppercase tracking-[0.3em] mb-1 opacity-90">Promotor</p>
+                    <p class="font-bold text-[12px] text-white tracking-wider font-playfair leading-tight mb-3">Prof. Dr. H. Azhar Affandi, SE, M.Si</p>
                     
-                    <!-- Penelaah / Penguji Card -->
-                    <div class="glass-panel p-4 bg-teal-deep/20 border-white/5">
-                        <p class="text-[10px] text-gold-champagne font-bold uppercase tracking-[0.3em] mb-3 italic text-pearl/70 text-center">Tim Penelaah / Penguji</p>
-                        <div class="space-y-2 text-pearl/85 font-medium text-[11px] text-left font-playfair">
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold-champagne rounded-full"></span>
-                                <span>Prof. Dr. H. Azhar Affandi, M.Sc.</span>
-                            </div>
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold-champagne rounded-full"></span>
-                                <span>Prof. Dr. H. M. Didi Turmudzi, M.Si.</span>
-                            </div>
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold-champagne rounded-full"></span>
-                                <span>Prof. Dr. H. Bambang Heru P., M.S.</span>
-                            </div>
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold-champagne rounded-full"></span>
-                                <span>Prof. Dr. H. Jaja Suteja, S.E., M.Si.</span>
-                            </div>
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold-champagne rounded-full"></span>
-                                <span>Prof. Dr. H. Horas Djulius, S.E.</span>
-                            </div>
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold-champagne rounded-full"></span>
-                                <span>Prof. Dr. H. M. Sidik Priadana, M.S.</span>
-                            </div>
-                            <div class="flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold-champagne rounded-full"></span>
-                                <span>Prof. Dr. H. Dedi Hadian, M.M.</span>
-                            </div>
+                    <div class="h-[1px] w-full bg-white/10 my-2"></div>
+                    
+                    <p class="text-[9px] text-gold font-bold uppercase tracking-[0.3em] mb-1 opacity-90">Co-Promotor</p>
+                    <p class="font-bold text-[12px] text-white tracking-wider font-playfair leading-tight">Prof. Dr. Ir. H. Bambang Heru P, MS</p>
+                </div>
+                
+                <!-- Penelaah / Penguji Card -->
+                <div class="glass-panel p-4 bg-black/20 border-white/10">
+                    <p class="text-[10px] text-gold font-bold uppercase tracking-[0.3em] mb-3 italic text-white/70 text-center">Tim Penelaah / Penguji</p>
+                    <div class="space-y-2 text-white/85 font-medium text-[11px] text-left font-playfair">
+                        <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
+                            <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
+                            <span>Prof. Dr. H. M. Sidik Priadana, M.S.</span>
+                        </div>
+                        <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
+                            <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
+                            <span>Dr. Atty Tri Juniarti, S.E., M.Si.</span>
+                        </div>
+                        <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
+                            <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
+                            <span>Prof. Dr. H. Horas Djulius, S.E.</span>
+                        </div>
+                        <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
+                            <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
+                            <span>Dr. H. Yusuf Arifin, S.Si., M.M.</span>
+                        </div>
+                        <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
+                            <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
+                            <span>Prof. Dr. Ir. H. Bambang Heru P, MS</span>
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
+                            <span>Prof. Dr. H. Azhar Affandi, SE, M.Si</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 6. PETA & LOKASI -->
+    <!-- 6. PETA & LOKASI -->
         <section id="sec-maps">
             <div class="w-full text-center px-6">
                 <h3 class="font-playfair text-2xl font-bold text-gold-champagne mb-6 italic tracking-widest uppercase text-center">Lokasi Acara</h3>
@@ -804,7 +807,7 @@
                 <!-- Tanda Tangan Hormat Kami -->
                 <div class="text-center pb-6 border-t border-white/5 pt-4">
                     <p class="text-[9px] uppercase tracking-[0.4em] opacity-40 mb-1.5 font-bold font-montserrat">Hormat Kami,</p>
-                    <h2 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight">Dr. Wahyitno, S.Pd., M.M.</h2>
+                    <h2 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight">Dr. Abdul Rahman Safiih</h2>
                 </div>
             </div>
         </section>
@@ -838,7 +841,7 @@
                     
                     <div class="mt-6 pt-5 border-t border-white/10">
                         <p class="text-[8px] uppercase tracking-[0.3em] text-white/40 mb-1 font-bold font-montserrat">Hormat Saya,</p>
-                        <h3 class="font-playfair text-base font-bold text-gold-champagne tracking-widest leading-tight">Dr. Wahyitno, S.Pd., M.M.</h3>
+                        <h3 class="font-playfair text-base font-bold text-gold-champagne tracking-widest leading-tight">Dr. Abdul Rahman Safiih</h3>
                     </div>
                 </div>
             </div>
@@ -919,7 +922,7 @@
                 isPlaying = true;
                 musicBtn.classList.add("playing");
             }).catch(() => {
-                // Autoplay diblokir oleh browser, tombol akan tetap berfungsi manual
+                // Autoplay diblokir oleh browser
             });
         }
     };
@@ -932,7 +935,7 @@
         }
     };
 
-    // Mengatur waktu hitung mundur
+    // Mengatur waktu hitung mundur (Selasa, 2 Juni 2026 pukul 09.30)
     function startCountdown() {
         const eventDate = new Date(2026, 5, 2, 9, 30, 0).getTime();
         
@@ -956,7 +959,6 @@
                 safeSet("minutes", minutes);
                 safeSet("seconds", seconds);
             } else {
-                // Ketika sudah melewati hari H atau tepat hari H
                 safeSet("days", 0);
                 safeSet("hours", 0);
                 safeSet("minutes", 0);
@@ -969,12 +971,11 @@
             }
         };
 
-        // Jalankan satu kali di awal untuk menghindari jeda render 1 detik
         updateCountdown();
         setInterval(updateCountdown, 1000);
     }
 
-    // Efek 3D Gyroscope-like saat digerakkan dengan mouse atau sentuhan pada foto profil
+    // Efek 3D Gyroscope pada foto profil
     function init3dEffect() {
         const container = document.getElementById('profile-container-3d');
         const card = document.getElementById('card-3d');
@@ -1039,7 +1040,6 @@
         
         document.querySelectorAll('.nav-link').forEach(btn => {
             btn.classList.remove('active');
-            // Jika berada di Halaman Terima Kasih (sec-closing), tetap aktifkan tombol navigasi RSVP
             let matchTarget = current;
             if (current === 'sec-closing') {
                 matchTarget = 'sec-thanks';
