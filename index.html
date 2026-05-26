@@ -29,31 +29,23 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        // Deteksi secara otomatis apakah aplikasi berjalan di dalam lingkungan Sandbox Canvas
-        const useEnvFirebase = typeof __firebase_config !== 'undefined';
-
-        // Konfigurasi dinamis (Gunakan variabel lingkungan jika tersedia untuk menghindari galat izin)
-        const firebaseConfig = useEnvFirebase ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyAWE4JJxwcADo3NnCBYuCiJuF7sMCW15ss",
-            authDomain: "undangan-digital-abdul-rahman.firebaseapp.com",
-            databaseURL: "https://undangan-digital-abdul-rahman-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "undangan-digital-abdul-rahman",
-            storageBucket: "undangan-digital-abdul-rahman.firebasestorage.app",
-            messagingSenderId: "303141079977",
-            appId: "1:303141079977:web:36436ee36d5752f55f12b8",
-            measurementId: "G-GLRNT7FCES"
+        // Konfigurasi Firebase Baru Anda (Dikonfigurasi permanen agar sinkron desktop & HP)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFgS4L5Xrg2dUtZxR8d1H3HbzPVYRINao",
+            authDomain: "undangan-digital-wahyitno.firebaseapp.com",
+            projectId: "undangan-digital-wahyitno",
+            storageBucket: "undangan-digital-wahyitno.firebasestorage.app",
+            messagingSenderId: "846818623173",
+            appId: "1:846818623173:web:17bc6c0e338f82e19bfaac",
+            measurementId: "G-NTZ9HT3474"
         };
 
-        const appId = useEnvFirebase && typeof __app_id !== 'undefined' ? __app_id : "undangan-digital-abdul-rahman";
-
+        const appId = "undangan-digital-wahyitno";
         let db = null;
         let auth = null;
         let isUsingFirebase = false;
-
-        // Mengosongkan data bawaan (mock data) agar data dimulai dari 0 sesuai permintaan Anda
-        const mockRSVPs = [];
 
         window.firebaseStore = { appId };
 
@@ -63,28 +55,20 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
                 
-                // 1. Menangani Proses Autentikasi Terlebih Dahulu
-                const initAuth = async () => {
-                    if (useEnvFirebase && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                };
-                await initAuth();
-
-                // 2. Pasang Listener Perubahan Auth State
+                // Melakukan login anonim agar diizinkan menulis & membaca Firestore
+                await signInAnonymously(auth);
+                
                 onAuthStateChanged(auth, (user) => {
                     if (user) { 
                         isUsingFirebase = true;
-                        loadPublicRSVP(user); 
-                        updateStatusIndicator(useEnvFirebase ? 'sandbox' : 'personal');
+                        loadPublicRSVP(); 
+                        updateStatusIndicator('active');
                     } else {
                         useFallback();
                     }
                 });
             } catch (error) { 
-                console.warn("Firebase terblokir atau offline. Beralih ke mode lokal aman.", error.message); 
+                console.warn("Koneksi Firebase terhambat. Mengaktifkan mode lokal.", error.message); 
                 useFallback();
             }
         };
@@ -100,12 +84,9 @@
             const badge = document.getElementById('db-status-badge');
             if (!badge) return;
             
-            if (status === 'personal') {
+            if (status === 'active') {
                 badge.className = "fixed bottom-6 left-6 z-[500] flex items-center gap-1.5 bg-emerald-500/90 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm border border-emerald-400/30";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> DB PERSONAL AKTIF (SINKRON)`;
-            } else if (status === 'sandbox') {
-                badge.className = "fixed bottom-6 left-6 z-[500] flex items-center gap-1.5 bg-sky-500/90 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm border border-sky-400/30";
-                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> DB EDITOR SANDBOX`;
+                badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> SINKRONISASI DATABASE AKTIF`;
             } else {
                 badge.className = "fixed bottom-6 left-6 z-[500] flex items-center gap-1.5 bg-amber-500/90 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm border border-amber-400/30";
                 badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> OFFLINE MODE (LOKAL)`;
@@ -151,17 +132,16 @@
             }
         };
 
-        const loadPublicRSVP = (user) => {
-            if (!user) return;
+        const loadPublicRSVP = () => {
+            if (!auth.currentUser) return;
             const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
             onSnapshot(colRef, (snapshot) => {
                 const docs = [];
                 snapshot.forEach(d => docs.push(d.data()));
-                // Melakukan pengurutan secara lokal di memori JS (Mencegah error index Firestore)
                 docs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 renderRSVPList(docs);
             }, (error) => {
-                console.error("Gagal memuat Firestore, dialihkan ke Fallback.", error);
+                console.error("Gagal membaca Firestore.", error);
                 useFallback();
             });
         };
@@ -169,11 +149,10 @@
         const loadFallbackRSVP = () => {
             try {
                 const localData = JSON.parse(localStorage.getItem(`rsvp_${appId}`)) || [];
-                const combined = [...localData, ...mockRSVPs];
-                combined.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                renderRSVPList(combined);
+                localData.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                renderRSVPList(localData);
             } catch (e) {
-                renderRSVPList(mockRSVPs);
+                renderRSVPList([]);
             }
         };
 
@@ -562,8 +541,8 @@
 
 <div id="app-container" class="relative">
     
-    <!-- INDIKATOR STATUS DATABASE CERDAS (Membantu Verifikasi Sinkronisasi) -->
-    <div id="db-status-badge" class="fixed bottom-6 left-6 z-[500] flex items-center gap-1.5 bg-slate-800/90 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm border border-slate-700/30">
+    <!-- INDIKATOR STATUS DATABASE SINKRONISASI -->
+    <div id="db-status-badge" class="fixed bottom-6 left-6 z-[500] flex items-center gap-1.5 bg-[#041617]/90 text-white text-[9px] font-bold px-3 py-1.5 rounded-full shadow-lg backdrop-blur-sm border border-gold/30">
         <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span> MENGHUBUNGKAN...
     </div>
 
