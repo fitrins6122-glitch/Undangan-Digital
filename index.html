@@ -11,9 +11,9 @@
     <!-- Open Graph / Meta Tags untuk WhatsApp & Media Sosial (Link Preview) -->
     <meta property="og:title" content="Sidang Promosi Dr. Cornelia Dumarya Manik, S.E., M.M. - Undangan Digital">
     <meta property="og:description" content="Selasa, 2 Juni 2026 | Ujian Sidang Promosi Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan.">
-    <meta property="og:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782269056/f94837ef-8c08-4a7c-ade5-f97e67ba3c54_w2m6te.png">
-    <meta property="og:image:secure_url" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782269056/f94837ef-8c08-4a7c-ade5-f97e67ba3c54_w2m6te.png">
-    <meta property="og:image:type" content="image/png">
+    <meta property="og:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782275868/WhatsApp_Image_2026-06-22_at_13.24.37_b8ixyf.jpg">
+    <meta property="og:image:secure_url" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782275868/WhatsApp_Image_2026-06-22_at_13.24.37_b8ixyf.jpg">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="400">
     <meta property="og:image:height" content="400">
     <meta property="og:type" content="website">
@@ -22,7 +22,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Sidang Promosi Dr. Cornelia Dumarya Manik - Undangan">
     <meta name="twitter:description" content="Undangan Ujian Sidang Promosi Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan.">
-    <meta name="twitter:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782269056/f94837ef-8c08-4a7c-ade5-f97e67ba3c54_w2m6te.png">
+    <meta name="twitter:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782275868/WhatsApp_Image_2026-06-22_at_13.24.37_b8ixyf.jpg">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -305,6 +305,7 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
+        /* Video Latar Belakang - Dioptimalkan agar termuat instan */
         .bg-video-wrapper {
             position: absolute;
             inset: 0;
@@ -359,6 +360,7 @@
             overflow-y: auto;
         }
 
+        /* Bingkai Foto 3D - Akselerasi GPU */
         .crystal-frame-3d {
             width: 210px; 
             height: 285px; 
@@ -366,6 +368,7 @@
             transform-style: preserve-3d; 
             transition: transform 0.15s ease-out;
             perspective: 1200px;
+            will-change: transform; /* Aktivasi Akselerasi Hardware GPU */
         }
         .glass-layer {
             position: absolute; 
@@ -416,10 +419,14 @@
         .corner-bl { bottom: -8px; left: -8px; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
         .corner-br { bottom: -8px; right: -8px; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
 
-        /* PERBAIKAN: Menghilangkan garis tepi/border pada navigasi bawah untuk tampilan mengapung yang bersih */
+        /* Wadah Navigasi Bawah - Akselerasi GPU */
+        #nav-container {
+            will-change: transform, opacity; /* Cegah lag saat transisi buka undangan */
+        }
+
         .bottom-nav {
             background-color: rgba(18, 30, 19, 0.95); 
-            border: none; /* Garis pembatas dihapus */
+            border: none; 
             border-radius: 35px; 
             padding: 12px 8px; 
             display: flex;
@@ -429,7 +436,6 @@
             backdrop-filter: blur(25px);
         }
         
-        /* PERBAIKAN: Menghilangkan garis tepi/outline default browser pada tombol-tombol ikon navigasi */
         .nav-link {
             display: flex; 
             flex-direction: column; 
@@ -459,6 +465,7 @@
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
             transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
             transform-style: preserve-3d;
+            will-change: transform, filter; /* Optimasi interaksi menu cepat */
         }
         
         .nav-link.active .nav-icon-3d {
@@ -624,6 +631,10 @@
             0% { opacity: 0; transform: translateY(30px); }
             100% { opacity: 1; transform: translateY(0); }
         }
+
+        #photo-scale-wrapper {
+            will-change: transform, opacity; /* Mencegah stutter saat transisi elastis foto profil */
+        }
     </style>
 </head>
 <body class="bg-deep-sage text-cream">
@@ -635,8 +646,9 @@
     </audio>
     
     <div class="bg-video-wrapper">
-        <video autoplay loop muted playsinline>
-            <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1779788864/Video_Latar_Belakang_Biru_Kehijauan_Abstrak_Warna_dan_Gaya_Seluler_toots6.mp4" type="video/mp4">
+        <video autoplay loop muted playsinline preload="auto">
+            <!-- Video Latar Belakang Baru: Hijau & Putih Cair Modern -->
+            <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1782275765/Hijau_dan_Putih_Cair_Modern_Daur_Ulang_Video_Seluler_2_ytjpxh.mp4" type="video/mp4">
         </video>
         <div class="bg-video-overlay"></div>
     </div>
