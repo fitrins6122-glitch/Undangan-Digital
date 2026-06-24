@@ -4,38 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <!-- Meta Tags Utama & SEO -->
-    <title>Undangan Sidang Promosi Doktor - Abdul Rahman Safiih</title>
-    <meta name="description" content="Undangan resmi Ujian Sidang Promosi mencapai gelar Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan untuk Abdul Rahman Safiih.">
-    <meta name="author" content="Abdul Rahman Safiih">
+    <title>Undangan Sidang Promosi Doktor - Dr. Cornelia Dumarya Manik, S.E., M.M.</title>
+    <meta name="description" content="Undangan resmi Ujian Sidang Promosi mencapai gelar Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan untuk Dr. Cornelia Dumarya Manik, S.E., M.M.">
+    <meta name="author" content="Dr. Cornelia Dumarya Manik, S.E., M.M.">
 
     <!-- Open Graph / Meta Tags untuk WhatsApp & Media Sosial (Link Preview) -->
-    <meta property="og:title" content="Sidang Promosi Abdul Rahman Safiih - Undangan Digital">
+    <meta property="og:title" content="Sidang Promosi Dr. Cornelia Dumarya Manik, S.E., M.M. - Undangan Digital">
     <meta property="og:description" content="Selasa, 2 Juni 2026 | Ujian Sidang Promosi Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan.">
-    <meta property="og:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1779789717/WhatsApp_Image_2026-05-26_at_15.32.38_umv7ja.jpg">
-    <meta property="og:image:secure_url" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1779789717/WhatsApp_Image_2026-05-26_at_15.32.38_umv7ja.jpg">
-    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782269056/f94837ef-8c08-4a7c-ade5-f97e67ba3c54_w2m6te.png">
+    <meta property="og:image:secure_url" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782269056/f94837ef-8c08-4a7c-ade5-f97e67ba3c54_w2m6te.png">
+    <meta property="og:image:type" content="image/png">
     <meta property="og:image:width" content="400">
     <meta property="og:image:height" content="400">
     <meta property="og:type" content="website">
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Sidang Promosi Abdul Rahman Safiih - Undangan">
+    <meta name="twitter:title" content="Sidang Promosi Dr. Cornelia Dumarya Manik - Undangan">
     <meta name="twitter:description" content="Undangan Ujian Sidang Promosi Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan.">
-    <meta name="twitter:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1779789717/WhatsApp_Image_2026-05-26_at_15.32.38_umv7ja.jpg">
+    <meta name="twitter:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782269056/f94837ef-8c08-4a7c-ade5-f97e67ba3c54_w2m6te.png">
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        gold: '#D4AF37',
-                        'deep-sage': '#2D342D',
-                        cream: '#F9F7F2',
-                        'sage-accent': '#7B8A78'
+                        gold: '#C2A75B',          // Emas Utama Baru
+                        'deep-sage': '#293C2A',     // Hijau Utama Baru
+                        cream: '#E0E4DC',           // Putih Netral Baru
+                        'sage-accent': '#4F6B51'    // Aksen Hijau Pendukung
                     }
                 }
             }
@@ -45,13 +43,11 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Great+Vibes&display=swap" rel="stylesheet">
     
-    <!-- Firebase SDK (Modular v11) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        // Konfigurasi Firebase Baru Anda (Dikonfigurasi permanen agar sinkron desktop & HP)
         const firebaseConfig = {
             apiKey: "AIzaSyCFgS4L5Xrg2dUtZxR8d1H3HbzPVYRINao",
             authDomain: "undangan-digital-wahyitno.firebaseapp.com",
@@ -75,7 +71,6 @@
                 auth = getAuth(app);
                 db = getFirestore(app);
                 
-                // Melakukan login anonim agar diizinkan menulis & membaca Firestore
                 await signInAnonymously(auth);
                 
                 onAuthStateChanged(auth, (user) => {
@@ -114,12 +109,12 @@
                     <div class="bg-white/5 border border-white/10 p-3 rounded-2xl mb-3 text-left backdrop-blur-md w-full shadow-lg transition-all hover:border-gold/30">
                         <div class="flex justify-between items-start mb-2 border-b border-white/10 pb-2">
                             <div class="flex flex-col">
-                                <span class="font-bold text-[11px] text-white tracking-wide leading-tight">${data.name}</span>
+                                <span class="font-bold text-[11px] text-cream tracking-wide leading-tight">${data.name}</span>
                                 <span class="text-[8px] text-gold/80">${data.relation || 'Rekan'}</span>
                             </div>
                             <span class="text-[8px] px-2 py-0.5 rounded-full font-bold uppercase shrink-0 ${badgeColor}">${data.status}</span>
                         </div>
-                        <p class="text-[11px] text-white/90 leading-relaxed whitespace-pre-wrap italic font-light">"${data.message || 'Doa terbaik untuk Bapak.'}"</p>
+                        <p class="text-[11px] text-cream/90 leading-relaxed whitespace-pre-wrap italic font-light">"${data.message || 'Doa terbaik untuk Ibu.'}"</p>
                     </div>
                 `;
             }).join('');
@@ -132,7 +127,7 @@
             
             const container = document.getElementById('public-messages');
             if (container) {
-                container.innerHTML = messagesHTML || '<p class="text-[11px] opacity-40 italic py-6 text-center text-white">Belum ada ucapan doa masuk.</p>';
+                container.innerHTML = messagesHTML || '<p class="text-[11px] opacity-40 italic py-6 text-center text-cream">Belum ada ucapan doa masuk.</p>';
             }
         };
 
@@ -160,7 +155,6 @@
             }
         };
 
-        // Mengirim RSVP baru
         window.submitRSVP = async () => {
             const name = document.getElementById('rsvp-name').value.trim();
             const rel = document.getElementById('rsvp-relation').value;
@@ -178,7 +172,7 @@
             const rsvpData = {
                 name, 
                 relation: rel, 
-                message: msg || 'Doa terbaik untuk Bapak.', 
+                message: msg || 'Doa terbaik untuk Ibu.', 
                 status,
                 timestamp: new Date().toISOString()
             };
@@ -243,17 +237,64 @@
         body, html {
             height: 100%; 
             width: 100%;
-            background-color: #020b0c; 
-            color: #f8fafc;
+            background-color: #0F1610; /* Hijau hutan gelap */
+            color: #E0E4DC; /* Putih Netral */
             font-family: 'Montserrat', sans-serif;
             overflow: hidden;
         }
         
+        @keyframes logoEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(-80px) scale(0.3) rotate(-180deg);
+                filter: blur(10px);
+            }
+            60% {
+                opacity: 0.9;
+                transform: translateY(15px) scale(1.1) rotate(15deg);
+                filter: blur(0px);
+            }
+            80% {
+                transform: translateY(-5px) scale(0.95) rotate(-5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+        }
+
+        .animate-logo-in {
+            animation: logoEntrance 1.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Animasi bernapas lembut untuk ornamen dekorasi kustom */
+        @keyframes pulseSlow {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.04); }
+        }
+        .animate-pulse-slow {
+            animation: pulseSlow 5s ease-in-out infinite;
+        }
+        
+        @keyframes elasticScaleUp {
+            0% {
+                opacity: 0;
+                transform: scale(0.15);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .animate-photo-in {
+            animation: elasticScaleUp 1.4s cubic-bezier(0.34, 1.75, 0.45, 1) forwards;
+        }
+
         .font-cinzel { font-family: 'Cinzel', serif; }
         .font-playfair { font-family: 'Playfair Display', serif; }
         .font-script { font-family: 'Great Vibes', cursive; }
 
-        /* Container Pembungkus utama untuk tampilan mobile */
         #app-container {
             max-width: 450px; 
             margin: 0 auto; 
@@ -264,7 +305,6 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Video Latar Belakang Tetap di Belakang Konten */
         .bg-video-wrapper {
             position: absolute;
             inset: 0;
@@ -279,15 +319,13 @@
             height: 100%;
             object-fit: cover;
         }
-        /* Overlay gelap & toska agar teks tetap tajam dan terbaca */
         .bg-video-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, rgba(2, 11, 12, 0.88) 0%, rgba(3, 15, 17, 0.75) 50%, rgba(2, 9, 10, 0.92) 100%);
+            background: linear-gradient(180deg, rgba(15, 22, 16, 0.95) 0%, rgba(41, 60, 42, 0.75) 50%, rgba(15, 22, 16, 0.95) 100%);
             z-index: 1;
         }
 
-        /* Container Penggulung Utama */
         #scroll-container {
             position: absolute;
             inset: 0;
@@ -313,7 +351,6 @@
             justify-content: center;
         }
         
-        /* Modifikator untuk section dengan konten panjang agar tidak terpotong */
         .sec-scrollable { 
             height: 100dvh; 
             justify-content: flex-start; 
@@ -322,39 +359,67 @@
             overflow-y: auto;
         }
 
-        /* Frame 3D Foto Profil */
         .crystal-frame-3d {
-            width: 200px; 
-            height: 270px; 
+            width: 210px; 
+            height: 285px; 
             position: relative;
             transform-style: preserve-3d; 
-            transition: transform 0.1s ease-out;
-            perspective: 1000px;
+            transition: transform 0.15s ease-out;
+            perspective: 1200px;
         }
         .glass-layer {
             position: absolute; 
             inset: 0; 
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(15px); 
             border-radius: 24px; 
-            border: 2px solid rgba(223, 186, 115, 0.55);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.85); 
+            border: 3px solid #C2A75B; /* Emas Utama Tebal */
+            box-shadow: 0 40px 80px rgba(0,0,0,0.85), inset 0 0 25px rgba(194, 167, 91, 0.3); 
             overflow: hidden;
             display: flex; 
             align-items: center; 
             justify-content: center;
             transform: translateZ(20px);
+            transform-style: preserve-3d;
         }
         .glass-layer img { 
             width: 100%; 
             height: 100%; 
             object-fit: cover; 
+            transform: translateZ(10px) scale(1.05);
+            transition: transform 0.3s ease-out;
+        }
+        
+        .shine-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0) 70%);
+            transform: translateZ(35px);
+            pointer-events: none;
+            transition: background-position 0.1s ease-out;
+            background-size: 200% 200%;
+            background-position: 0% 0%;
         }
 
-        /* Navigasi Melayang bagian bawah */
+        .frame-corner {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 3px solid #C2A75B;
+            z-index: 50;
+            transform: translateZ(45px);
+            pointer-events: none;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+        }
+        .corner-tl { top: -8px; left: -8px; border-right: none; border-bottom: none; border-radius: 6px 0 0 0; }
+        .corner-tr { top: -8px; right: -8px; border-left: none; border-bottom: none; border-radius: 0 6px 0 0; }
+        .corner-bl { bottom: -8px; left: -8px; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
+        .corner-br { bottom: -8px; right: -8px; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
+
+        /* PERBAIKAN: Menghilangkan garis tepi/border pada navigasi bawah untuk tampilan mengapung yang bersih */
         .bottom-nav {
-            background-color: rgba(4, 22, 23, 0.92); 
-            border: 1px solid rgba(223, 186, 115, 0.35);
+            background-color: rgba(18, 30, 19, 0.95); 
+            border: none; /* Garis pembatas dihapus */
             border-radius: 35px; 
             padding: 12px 8px; 
             display: flex;
@@ -363,23 +428,47 @@
             box-shadow: 0 20px 50px rgba(0,0,0,0.9);
             backdrop-filter: blur(25px);
         }
+        
+        /* PERBAIKAN: Menghilangkan garis tepi/outline default browser pada tombol-tombol ikon navigasi */
         .nav-link {
             display: flex; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center;
             flex: 1; 
-            color: rgba(248, 250, 252, 0.35); 
+            color: rgba(194, 167, 91, 0.45); 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            perspective: 500px;
+            background: transparent;
+            border: none;
+            outline: none;
         }
-        .nav-link svg { width: 18px; height: 18px; margin-bottom: 3px; }
-        .nav-link span { font-size: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-        .nav-link.active { color: #DFBA73 !important; transform: scale(1.1) translateY(-2px); text-shadow: 0 0 10px rgba(223,186,115,0.4); }
+        .nav-link:focus, .nav-link:active {
+            outline: none;
+            border: none;
+            box-shadow: none;
+        }
+        .nav-link span { font-size: 6px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+        .nav-link.active { color: #C2A75B !important; transform: scale(1.15) translateY(-4px); text-shadow: 0 0 10px rgba(194, 167, 91, 0.6); }
 
-        /* Tombol Premium */
+        .nav-icon-3d {
+            width: 28px; 
+            height: 28px; 
+            margin-bottom: 2px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+            transform-style: preserve-3d;
+        }
+        
+        .nav-link.active .nav-icon-3d {
+            transform: translateY(-6px) scale(1.25) rotateX(15deg) rotateY(-10deg);
+            filter: drop-shadow(6px 10px 8px rgba(0,0,0,0.8)) drop-shadow(0 0 8px rgba(194, 167, 91, 0.6));
+        }
+
         .btn-pop {
-            background: linear-gradient(135deg, #DFBA73 0%, #C5A059 100%); 
-            color: #041617; 
+            background: linear-gradient(135deg, #C2A75B 0%, #AD924A 100%); 
+            color: #121E13; 
             font-weight: 800; 
             padding: 12px 28px;
             border-radius: 50px; 
@@ -388,14 +477,13 @@
             text-transform: uppercase; 
             font-size: 11px; 
             transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(223, 186, 115, 0.3);
+            box-shadow: 0 8px 30px rgba(194, 167, 91, 0.3);
         }
         .btn-pop:active {
             transform: scale(0.96);
-            box-shadow: 0 4px 10px rgba(223, 186, 115, 0.15);
+            box-shadow: 0 4px 10px rgba(194, 167, 91, 0.15);
         }
 
-        /* Music control floating */
         .music-control { 
             position: fixed; 
             bottom: 110px; 
@@ -406,13 +494,13 @@
             width: 44px; 
             height: 44px; 
             border-radius: 50%; 
-            background: rgba(4, 22, 23, 0.85);
+            background: rgba(18, 30, 19, 0.85); 
             backdrop-filter: blur(12px); 
             display: flex; 
             align-items: center; 
             justify-content: center;
-            color: #DFBA73; 
-            border: 1px solid rgba(223, 186, 115, 0.4);
+            color: #C2A75B; 
+            border: 1px solid rgba(194, 167, 91, 0.4);
             box-shadow: 0 8px 24px rgba(0,0,0,0.6);
             transition: all 0.3s ease;
         }
@@ -430,27 +518,26 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 12px; 
             padding: 12px 14px; 
-            color: white; 
+            color: #E0E4DC; 
             font-size: 11px; 
             width: 100%; 
             outline: none;
             transition: all 0.3s ease;
         }
         input:focus, select:focus, textarea:focus {
-            border-color: rgba(223, 186, 115, 0.6);
+            border-color: rgba(194, 167, 91, 0.6);
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 10px rgba(223, 186, 115, 0.2);
+            box-shadow: 0 0 10px rgba(194, 167, 91, 0.2);
         }
 
-        /* PERBAIKAN WARNA DROP DOWN OPTION */
         select option {
-            background-color: #0c1b1c !important;
-            color: #ffffff !important;
+            background-color: #1B271C !important; 
+            color: #E0E4DC !important;
         }
 
         .recap-item {
-            background: rgba(4, 22, 23, 0.65); 
-            border: 1px solid rgba(223, 186, 115, 0.3);
+            background: rgba(18, 30, 19, 0.65); 
+            border: 1px solid rgba(194, 167, 91, 0.3);
             border-radius: 14px; 
             padding: 8px 4px; 
             flex: 1; 
@@ -458,11 +545,11 @@
             backdrop-filter: blur(5px);
         }
 
-        .countdown-num { font-size: 1.75rem; font-weight: 800; color: #DFBA73; line-height: 1; }
-        .countdown-label { font-size: 9px; text-transform: uppercase; color: rgba(248, 250, 252, 0.5); font-weight: 700; margin-top: 6px; letter-spacing: 0.1em; }
+        .countdown-num { font-size: 1.75rem; font-weight: 800; color: #C2A75B; line-height: 1; }
+        .countdown-label { font-size: 9px; text-transform: uppercase; color: rgba(224, 228, 220, 0.5); font-weight: 700; margin-top: 6px; letter-spacing: 0.1em; }
 
         .glass-panel {
-            background: rgba(15, 38, 40, 0.35); 
+            background: rgba(41, 60, 42, 0.35); 
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08); 
             border-radius: 28px;
@@ -475,7 +562,7 @@
             max-width: 320px; 
             height: 180px;
             border-radius: 16px; 
-            border: 2px solid rgba(223, 186, 115, 0.45);
+            border: 2px solid rgba(194, 167, 91, 0.45);
             box-shadow: 0 12px 35px rgba(0,0,0,0.7); 
             overflow: hidden;
             background: rgba(255, 255, 255, 0.03); 
@@ -494,7 +581,7 @@
         .map-overlay {
             position: absolute; 
             inset: 0; 
-            background: linear-gradient(0deg, rgba(4, 22, 23, 0.95) 0%, rgba(4, 22, 23, 0.3) 100%);
+            background: linear-gradient(0deg, rgba(18, 30, 19, 0.95) 0%, rgba(18, 30, 19, 0.3) 100%);
             display: flex; 
             flex-direction: column; 
             justify-content: flex-end; 
@@ -505,7 +592,7 @@
             position: absolute; 
             width: 16px; 
             height: 16px; 
-            background: #DFBA73; 
+            background: #C2A75B; 
             border-radius: 50%;
             animation: pulse 2s infinite; 
             top: 42%;
@@ -513,25 +600,23 @@
             transform: translate(-50%, -50%);
         }
         
-        /* Area Pesan RSVP */
         #public-messages { 
             max-height: 160px;
             overflow-y: auto; 
             scrollbar-width: thin; 
-            scrollbar-color: #DFBA73 transparent;
+            scrollbar-color: #C2A75B transparent;
             padding: 8px; 
             width: 100%; 
         }
         #public-messages::-webkit-scrollbar { width: 4px; }
-        #public-messages::-webkit-scrollbar-thumb { background: #DFBA73; border-radius: 10px; }
+        #public-messages::-webkit-scrollbar-thumb { background: #C2A75B; border-radius: 10px; }
 
         @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(223, 186, 115, 0.8); }
-            70% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 12px rgba(223, 186, 115, 0); }
-            100% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(223, 186, 115, 0); }
+            0% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(194, 167, 91, 0.8); }
+            70% { transform: translate(-50%, -50%) scale(1.1); box-shadow: 0 0 0 12px rgba(194, 167, 91, 0); }
+            100% { transform: translate(-50%, -50%) scale(0.9); box-shadow: 0 0 0 0 rgba(194, 167, 91, 0); }
         }
 
-        /* Animasi Transisi Elemen */
         .fade-in-up {
             animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
@@ -541,16 +626,14 @@
         }
     </style>
 </head>
-<body>
+<body class="bg-deep-sage text-cream">
 
 <div id="app-container" class="relative">
 
-    <!-- AUDIO KONTROL LATAR BELAKANG -->
     <audio id="bg-music" loop>
-        <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1772080461/videoplayback_2_pgcxvx.mp3" type="audio/mpeg">
+        <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1782111309/Via_Valen_Yo_Ayo_prcvve.mp3" type="audio/mpeg">
     </audio>
     
-    <!-- LAPISAN VIDEO LATAR BELAKANG (FIXED) -->
     <div class="bg-video-wrapper">
         <video autoplay loop muted playsinline>
             <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1779788864/Video_Latar_Belakang_Biru_Kehijauan_Abstrak_Warna_dan_Gaya_Seluler_toots6.mp4" type="video/mp4">
@@ -567,55 +650,76 @@
         </button>
     </div>
 
-    <!-- CONTAINER PENGGULUNG KONTEN UTAMA -->
     <div id="scroll-container">
 
-        <!-- 1. BERANDA (HOME) -->
+        <!-- 1. OPENING SECTION -->
         <section id="sec-opening">
-            <div class="text-center z-10 w-full px-6 -mt-4 fade-in-up">
-                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo UNPAS" class="w-24 mx-auto mb-6 drop-shadow-[0_10px_15px_rgba(223,186,115,0.25)]">
-                <p class="font-script text-5xl mb-2 text-gold">Undangan</p>
-                <h2 class="font-cinzel font-bold text-[13px] tracking-[0.25em] mb-3 uppercase text-white/90">Sidang Promosi Doktor</h2>
+            <!-- Ornamen Pojok Kiri Atas -->
+            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782271425/Desain_tanpa_judul_5_zf9j5w.png" alt="Ornamen Kiri Atas" class="absolute top-4 left-4 w-28 opacity-90 drop-shadow-[0_4px_12px_rgba(194,167,91,0.35)] animate-pulse-slow pointer-events-none z-20">
+            
+            <!-- Ornamen Pojok Kanan Atas -->
+            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782271865/Desain_tanpa_judul_5_ypcccz.png" alt="Ornamen Kanan Atas" class="absolute top-4 right-4 w-28 opacity-90 drop-shadow-[0_4px_12px_rgba(194,167,91,0.35)] animate-pulse-slow pointer-events-none z-20">
+
+            <!-- Ornamen Pojok Kiri Bawah -->
+            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782274699/Desain_tanpa_judul_5_-_Copy_tqotja.png" alt="Ornamen Kiri Bawah" class="absolute bottom-4 left-4 w-28 opacity-90 drop-shadow-[0_4px_12px_rgba(194,167,91,0.35)] animate-pulse-slow pointer-events-none z-20">
+
+            <!-- Ornamen Pojok Kanan Bawah -->
+            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782274700/Desain_tanpa_judul_5_wnotek.png" alt="Ornamen Kanan Bawah" class="absolute bottom-4 right-4 w-28 opacity-90 drop-shadow-[0_4px_12px_rgba(194,167,91,0.35)] animate-pulse-slow pointer-events-none z-20">
+
+            <div class="text-center z-10 w-full px-6 mt-10 fade-in-up">
+                <!-- Logo UNPAS diletakkan tepat di atas tulisan undangan -->
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo UNPAS" class="w-28 mx-auto mb-6 drop-shadow-[0_12px_20px_rgba(194,167,91,0.35)] animate-logo-in">
+                
+                <p class="font-script text-5xl mb-2 text-gold" style="-webkit-text-stroke: 1.2px #C2A75B; text-shadow: 0 4px 10px rgba(194,167,91,0.5);">Undangan</p>
+                <h2 class="font-cinzel font-bold text-[13px] tracking-[0.25em] mb-3 uppercase text-cream/90">Sidang Promosi Doktor</h2>
                 <p class="text-[9px] tracking-[0.3em] opacity-80 mb-8 border-y border-white/10 py-2 uppercase font-bold text-center text-gold">Pascasarjana Universitas Pasundan</p>
                 
-                <h1 class="font-playfair text-xl font-bold text-white mb-8 tracking-wide leading-tight px-2 drop-shadow-md">
-                    Abdul Rahman Safiih
+                <h1 class="font-playfair font-bold text-cream mb-8 tracking-wide whitespace-nowrap px-1 drop-shadow-md" style="font-size: clamp(14px, 4.5vw, 18px);">
+                    Dr. Cornelia Dumarya Manik, S.E., M.M.
                 </h1>
                 
                 <div class="mb-8 bg-white/5 py-4 px-6 rounded-2xl border border-white/10 inline-block min-w-[220px] backdrop-blur-md shadow-2xl text-center">
-                    <p class="opacity-50 text-[8px] uppercase tracking-widest mb-1.5 font-semibold text-white">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
-                    <p id="guest-name" class="font-playfair text-white font-bold text-lg tracking-wide italic text-gold">Tamu Undangan</p>
+                    <p class="opacity-50 text-[8px] uppercase tracking-widest mb-1.5 font-semibold text-cream">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+                    <p id="guest-name" class="font-playfair text-gold font-bold text-lg tracking-wide italic">Tamu Undangan</p>
                 </div>
                 <br>
                 <button onclick="bukaUndangan()" class="btn-pop shadow-2xl font-cinzel">Buka Undangan</button>
             </div>
         </section>
 
-        <!-- 2. PROFIL PENELITI -->
+        <!-- 2. PROFILE SECTION WITH 3D GLASS SHINE & DYNAMIC SCROLL ANIMATION -->
         <section id="sec-profil" class="snap-start">
             <div class="text-center w-full px-6 -mt-2">
                 <p class="font-script text-4xl text-gold mb-4 text-center">Assalamu’alaikum Wr. Wb.</p>
-                <p class="text-[11px] leading-relaxed text-white/85 mb-6 text-center px-4 font-light">
+                <p class="text-[11px] leading-relaxed text-cream/85 mb-6 text-center px-4 font-light">
                     Mengundang dengan hormat Bapak/Ibu/Saudara untuk menghadiri Ujian Sidang Promosi mencapai gelar Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan
                 </p>
                 
-                <!-- Area 3D interaktif -->
                 <div class="profile-3d-container flex justify-center items-center py-2" id="profile-container-3d">
-                    <div class="crystal-frame-3d shadow-gold/25 shadow-2xl" id="card-3d">
-                        <div class="glass-layer">
-                            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1779789717/WhatsApp_Image_2026-05-26_at_15.32.38_umv7ja.jpg" alt="Foto Abdul Rahman Safiih">
+                    <!-- Photo scale wrapper untuk animasi transisi elastis masuk -->
+                    <div id="photo-scale-wrapper" class="opacity-0 transition-all duration-300">
+                        <div class="crystal-frame-3d shadow-gold/30 shadow-2xl" id="card-3d">
+                            <div class="frame-corner corner-tl"></div>
+                            <div class="frame-corner corner-tr"></div>
+                            <div class="frame-corner corner-bl"></div>
+                            <div class="frame-corner corner-br"></div>
+                            
+                            <div class="glass-layer">
+                                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782269056/f94837ef-8c08-4a7c-ade5-f97e67ba3c54_w2m6te.png" alt="Foto Dr. Cornelia Dumarya Manik, S.E., M.M.">
+                                <div class="shine-overlay" id="shine-3d"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
-                <h2 class="font-playfair text-lg font-bold text-white mb-2 tracking-wide text-center mt-8 drop-shadow-md">
-                    Abdul Rahman Safiih
+                <h2 class="font-playfair text-lg font-bold text-cream mb-2 tracking-wide text-center mt-8 drop-shadow-md">
+                    Dr. Cornelia Dumarya Manik, S.E., M.M.
                 </h2>
                 <div class="h-[1.5px] w-16 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-3"></div>
             </div>
         </section>
 
-        <!-- 3. RINCIAN ACARA & DISERTASI -->
+        <!-- 3. DISERTASI & ACARA -->
         <section id="sec-acara" class="snap-start">
             <div class="w-full max-w-[420px] px-4 text-center">
                 <div class="glass-panel p-5 border-gold/25 shadow-2xl relative overflow-hidden">
@@ -624,31 +728,30 @@
                     <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1772094997/LOGO_g1dvzg.png" alt="Logo UNPAS" class="w-12 mx-auto mb-4 drop-shadow-md">
                     
                     <p class="text-[8px] font-bold text-gold uppercase tracking-[0.2em] mb-2">Judul Disertasi</p>
-                    <h2 class="font-cinzel text-[11px] font-bold text-white leading-relaxed tracking-wide uppercase px-1 mb-2 border-b border-white/5 pb-3">
-                        DETERMINAN KEPUASAN KERJA DAN PENGARUHNYA TERHADAP KOMITMEN PADA PROFESI DOSEN YANG DIMODERASI OLEH TUNJANGAN FUNGSIONAL DOSEN
+                    <h2 class="font-cinzel text-[11px] font-bold text-cream leading-relaxed tracking-wide uppercase px-1 mb-2 border-b border-white/5 pb-3">
+                        PENGARUH DIGITAL MARKETING, BRAND IMAGE DAN KUALITAS PELAYANAN TERHADAP NILAI PELANGGAN SERTA DAMPAK PADA KEPERCAYAAN PELANGGAN
                     </h2>
                     <p class="font-montserrat text-[9px] text-gold/90 font-medium italic mb-4 leading-normal">
-                        (SURVEY PADA PTS PROGRAM STUDI S1 MANAJEMEN DI TANGERANG RAYA)
+                        (SURVEI PADA PRODUK MITRA UMKM BPR PROVINSI BANTEN)
                     </p>
                     
-                    <!-- Terjemahan Bahasa Inggris -->
                     <div class="border-t border-white/5 pt-3 mb-4">
-                        <p class="text-[9px] text-white/50 leading-normal italic font-light">
-                            DETERMINANTS OF JOB SATISFACTION AND ITS INFLUENCE ON LECTURER PROFESSIONAL COMMITMENT, MODERATED BY LECTURER FUNCTIONAL ALLOWANCES
+                        <p class="text-[9px] text-cream/50 leading-normal italic font-light">
+                            THE INFLUENCE OF DIGITAL MARKETING, BRAND IMAGE, AND SERVICE QUALITY ON CUSTOMER VALUE AND ITS IMPACT ON CUSTOMER TRUST
                         </p>
                         <p class="text-[8px] text-gold/70 italic font-light mt-1">
-                            (SURVEY OF PRIVATE UNIVERSITIES WITH UNDERGRADUATE MANAGEMENT PROGRAMS IN GREATER TANGERANG)
+                            (SURVEY OF MSME PARTNER PRODUCTS OF RURAL BANKS IN BANTEN PROVINCE)
                         </p>
                     </div>
                     
                     <div class="flex items-center justify-center gap-6 my-4 border-t border-white/5 pt-4">
                         <div class="text-right">
-                            <p class="font-bold text-lg text-white uppercase tracking-wider">Selasa</p>
+                            <p class="font-bold text-lg text-cream uppercase tracking-wider">Selasa</p>
                         </div>
                         <div class="h-8 w-px bg-gold/45"></div>
                         <div class="text-left">
                             <p class="text-[9px] text-gold tracking-widest font-bold uppercase">Juni</p>
-                            <p class="text-xl font-black text-white leading-none">02</p>
+                            <p class="text-xl font-black text-cream leading-none">02</p>
                             <p class="text-[9px] text-gold tracking-widest font-bold">2026</p>
                         </div>
                     </div>
@@ -658,14 +761,14 @@
                     </p>
                     
                     <div class="w-full">
-                        <p class="text-[10px] font-bold text-white uppercase mb-1 tracking-wider">Aula Lt.5 Pascasarjana Universitas Pasundan</p>
-                        <p class="text-[9px] text-white/60 italic font-medium">Jl. Sumatera No. 41, Babakan Ciamis, Bandung</p>
+                        <p class="text-[10px] font-bold text-cream uppercase mb-1 tracking-wider">Aula Lt.5 Pascasarjana Universitas Pasundan</p>
+                        <p class="text-[9px] text-cream/60 italic font-medium">Jl. Sumatera No. 41, Babakan Ciamis, Bandung</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 4. PENGHITUNG MUNDUR (COUNTDOWN) -->
+        <!-- 4. COUNTDOWN SECTION -->
         <section id="sec-countdown">
             <div class="w-full max-w-[420px] text-center px-6">
                 <h3 class="font-cinzel text-xl font-bold text-gold mb-8 tracking-[0.3em] uppercase opacity-90 italic">Menghitung Hari</h3>
@@ -689,53 +792,45 @@
                     </div>
                 </div>
                 
-                <p class="text-[9px] text-white/35 mt-12 tracking-[0.4em] font-bold uppercase italic border-t border-white/5 pt-5 inline-block px-8 text-center">
+                <p class="text-[9px] text-cream/35 mt-12 tracking-[0.4em] font-bold uppercase italic border-t border-white/5 pt-5 inline-block px-8 text-center">
                     UNPAS Bandung
                 </p>
             </div>
         </section>
 
-        <!-- 5. DEWAN AKADEMIK (PROMOTOR & PENGUJI) -->
+        <!-- 5. TIM PROMOTOR & DEWAN AKADEMIK -->
         <section id="sec-promotor" class="sec-scrollable snap-start">
             <div class="w-full max-w-[420px] px-6 text-center">
                 <h3 class="font-playfair text-lg font-bold text-gold mb-5 uppercase tracking-[0.25em] border-b border-gold/20 pb-2 italic">Dewan Akademik</h3>
                 
                 <div class="space-y-4">
-                    <!-- Promotor & Co-Promotor Card -->
                     <div class="glass-panel p-4 bg-black/40 text-left border-gold/20 shadow-xl relative overflow-hidden">
                         <div class="absolute right-0 top-0 w-16 h-16 bg-gold/5 rounded-full filter blur-md"></div>
                         <p class="text-[9px] text-gold font-bold uppercase tracking-[0.3em] mb-1 opacity-90">Promotor</p>
-                        <p class="font-bold text-[12px] text-white tracking-wider font-playfair leading-tight mb-3">Prof. Dr. H. M. Sidik Priadana, M.S.</p>
+                        <p class="font-bold text-[12px] text-cream tracking-wider font-playfair leading-tight mb-3">Prof. Jaja Suteja, S.E., M.Si.</p>
                         
                         <div class="h-[1px] w-full bg-white/10 my-2"></div>
                         
                         <p class="text-[9px] text-gold font-bold uppercase tracking-[0.3em] mb-1 opacity-90">Co-Promotor</p>
-                        <p class="font-bold text-[12px] text-white tracking-wider font-playfair leading-tight">Dr. Atty Tri Juniarti, S.E., M.Si.</p>
+                        <p class="font-bold text-[12px] text-cream tracking-wider font-playfair leading-tight">Prof. Dr. H. Juhanim, S.E., M.Si.</p>
                     </div>
                     
-                    <!-- Penelaah / Penguji Card -->
                     <div class="glass-panel p-4 bg-black/20 border-white/10">
-                        <p class="text-[10px] text-gold font-bold uppercase tracking-[0.3em] mb-3 italic text-white/70 text-center">Tim Penelaah / Penguji</p>
-                        <div class="space-y-2 text-white/85 font-medium text-[11px] text-left font-playfair">
+                        <p class="text-[10px] text-gold font-bold uppercase tracking-[0.3em] mb-3 italic text-cream/70 text-center">Tim Penelaah / Penguji</p>
+                        <div class="space-y-3 text-cream/85 font-medium text-[11px] text-left font-playfair">
                             <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
                                 <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                                <span>Prof. Dr. H. Azhar Affandi, SE, M.Si</span>
-                            </div>
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                                <span>Prof. Dr. Ir. H. Bambang Heru P, MS</span>
-                            </div>
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                                <span>Prof. Dr. H. Jaja Suteja, S.E., M.Si.</span>
-                            </div>
-                            <div class="border-b border-white/5 pb-1.5 flex items-center gap-2.5">
-                                <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                                <span>Prof. Dr. H. Horas Djulius, S.E.</span>
+                                <div class="flex flex-col">
+                                    <span class="text-[9px] text-gold font-bold uppercase tracking-[0.1em] opacity-80">Penelaah 1</span>
+                                    <span class="text-[11px] font-semibold">Prof. Dr. H. M. Sidik Priadana, MS</span>
+                                </div>
                             </div>
                             <div class="flex items-center gap-2.5">
                                 <span class="w-1.5 h-1.5 bg-gold rounded-full"></span>
-                                <span>Dr. H. Yusuf Arifin, S.Si., M.M.</span>
+                                <div class="flex flex-col">
+                                    <span class="text-[9px] text-gold font-bold uppercase tracking-[0.1em] opacity-80">Penelaah 2</span>
+                                    <span class="text-[11px] font-semibold">Prof. Dr. Hj. Dewi Indriani, S.E., M.Si.</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -743,7 +838,7 @@
             </div>
         </section>
 
-        <!-- 6. PETA & LOKASI -->
+        <!-- 6. MAPS & LOCATION -->
         <section id="sec-maps">
             <div class="w-full text-center px-6">
                 <h3 class="font-playfair text-2xl font-bold text-gold mb-6 italic tracking-widest uppercase text-center">Lokasi Acara</h3>
@@ -757,7 +852,7 @@
                                     <svg class="w-9 h-9 text-gold mb-2 drop-shadow-lg" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                                     </svg>
-                                    <div class="bg-[#041617]/90 backdrop-blur-md px-4 py-2 rounded-full border border-gold/45 shadow-xl active:scale-95 transition-transform">
+                                    <div class="bg-deep-sage/90 backdrop-blur-md px-4 py-2 rounded-full border border-gold/45 shadow-xl active:scale-95 transition-transform">
                                         <p class="font-montserrat text-gold font-bold text-[8px] uppercase tracking-widest text-center">Navigasi Google Maps</p>
                                     </div>
                                 </div>
@@ -766,36 +861,33 @@
                     </div>
                 </a>
                 
-                <div class="glass-panel p-5 border-white/5 bg-[#0f2628]/20">
-                    <p class="font-playfair text-base text-white font-bold mb-1.5 uppercase tracking-wider text-center">Pascasarjana UNPAS</p>
+                <div class="glass-panel p-5 border-white/5 bg-[#1B271C]/20">
+                    <p class="font-playfair text-base text-cream font-bold mb-1.5 uppercase tracking-wider text-center">Pascasarjana UNPAS</p>
                     <div class="h-[1px] w-12 bg-gold/40 mx-auto mb-3"></div>
-                    <p class="font-montserrat text-[10px] text-white/80 leading-relaxed font-medium uppercase tracking-tight text-center px-2">
+                    <p class="font-montserrat text-[10px] text-cream/80 leading-relaxed font-medium uppercase tracking-tight text-center px-2">
                         Jl. Sumatera No. 41, Babakan Ciamis, Kec. Sumur Bandung, Kota Bandung, Jawa Barat 40117
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- 7. RSVP & UCAPAN DOA -->
+        <!-- 7. RSVP & REAL-TIME GUEST MESSAGES -->
         <section id="sec-thanks" class="sec-scrollable">
             <div class="w-full max-w-[420px] px-4 text-center">
                 <h3 class="font-playfair text-xl font-bold text-gold mb-3 uppercase tracking-widest italic">RSVP & Ucapan</h3>
                 
-                <!-- Ringkasan Kehadiran Realtime -->
                 <div class="flex justify-between gap-1.5 mb-4">
-                    <div class="recap-item"><p id="count-total" class="text-sm font-bold text-white font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Total</p></div>
+                    <div class="recap-item"><p id="count-total" class="text-sm font-bold text-cream font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Total</p></div>
                     <div class="recap-item"><p id="count-hadir" class="text-sm font-bold text-gold font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Hadir</p></div>
-                    <div class="recap-item"><p id="count-ragu" class="text-sm font-bold text-white/70 font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Ragu</p></div>
-                    <div class="recap-item"><p id="count-tidak" class="text-sm font-bold text-white/40 font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Izin</p></div>
+                    <div class="recap-item"><p id="count-ragu" class="text-sm font-bold text-cream/70 font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Ragu</p></div>
+                    <div class="recap-item"><p id="count-tidak" class="text-sm font-bold text-cream/40 font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Izin</p></div>
                 </div>
 
-                <!-- Form Konfirmasi Kehadiran -->
                 <div class="glass-panel p-4 text-left border-gold/20 space-y-3 mb-4 shadow-2xl bg-black/25">
                     <div class="grid grid-cols-2 gap-2">
                         <input id="rsvp-name" type="text" placeholder="Nama Lengkap" class="py-2.5">
                         
-                        <!-- DROP DOWN RELATION DENGAN WARNA BAGUS DAN JELAS -->
-                        <select id="rsvp-relation" class="py-2.5 bg-[#0c1b1c] text-white border border-white/10 rounded-12">
+                        <select id="rsvp-relation" class="py-2.5 bg-[#1B271C] text-cream border border-white/10 rounded-12">
                             <option value="Rekan Sejawat">Rekan Sejawat</option>
                             <option value="Keluarga">Keluarga</option>
                             <option value="Mahasiswa">Mahasiswa</option>
@@ -804,8 +896,7 @@
                     </div>
                     <textarea id="rsvp-message" placeholder="Tulis doa restu atau ucapan terbaik..." rows="2" class="py-2.5"></textarea>
                     
-                    <!-- DROP DOWN STATUS DENGAN WARNA BAGUS DAN JELAS -->
-                    <select id="rsvp-status" class="py-2.5 bg-[#0c1b1c] text-white border border-white/10 rounded-12">
+                    <select id="rsvp-status" class="py-2.5 bg-[#1B271C] text-cream border border-white/10 rounded-12">
                         <option value="" disabled selected>Konfirmasi Kehadiran</option>
                         <option value="Hadir">Insya Allah Hadir</option>
                         <option value="Masih Ragu">Masih Ragu</option>
@@ -817,84 +908,83 @@
                     </button>
                 </div>
 
-                <!-- Box List Pesan Real-time -->
                 <div id="public-messages" class="w-full shadow-inner bg-black/15 border border-white/5 rounded-2xl mb-5">
-                    <p class="text-[10px] opacity-40 italic py-4 text-center text-white">Sedang memuat ucapan...</p>
+                    <p class="text-[10px] opacity-40 italic py-4 text-center text-cream">Sedang memuat ucapan...</p>
                 </div>
                 
-                <!-- Tanda Tangan Hormat Kami -->
                 <div class="text-center pb-6 border-t border-white/5 pt-4">
                     <p class="text-[9px] uppercase tracking-[0.4em] opacity-40 mb-1.5 font-bold font-montserrat">Hormat Kami,</p>
-                    <h2 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight">Abdul Rahman Safiih</h2>
+                    <h2 class="font-playfair text-sm font-bold text-gold tracking-widest leading-tight">Dr. Cornelia Dumarya Manik, S.E., M.M.</h2>
                 </div>
             </div>
         </section>
 
-        <!-- 8. HALAMAN TERIMA KASIH (CLOSING PAGE) -->
+        <!-- 8. CLOSING SECTION -->
         <section id="sec-closing" class="snap-start text-center">
             <div class="w-full max-w-[420px] px-6 py-4">
                 <div class="glass-panel p-6 border-gold/30 shadow-2xl relative overflow-hidden bg-black/35 backdrop-blur-md">
-                    <!-- Ornamen Cahaya Abstrak Latar Belakang -->
                     <div class="absolute -bottom-10 -right-10 w-24 h-24 bg-gold/15 rounded-full filter blur-xl"></div>
                     <div class="absolute -top-10 -left-10 w-24 h-24 bg-emerald-500/10 rounded-full filter blur-xl"></div>
                     
-                    <!-- Ikon Simbol Terima Kasih Elegan -->
-                    <div class="w-16 h-16 mx-auto mb-5 bg-gold/10 rounded-full flex items-center justify-center border border-gold/30 shadow-[0_0_15px_rgba(212,175,55,0.15)]">
+                    <div class="w-16 h-16 mx-auto mb-5 bg-gold/10 rounded-full flex items-center justify-center border border-gold/30 shadow-[0_0_15px_rgba(194,167,91,0.15)]">
                         <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0110 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0114 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
                         </svg>
                     </div>
                     
                     <p class="font-script text-4xl text-gold mb-1">Terima Kasih</p>
-                    <h4 class="font-playfair text-[11px] tracking-[0.2em] uppercase font-bold text-white/90 mb-5 border-b border-white/10 pb-3">Teruntuk Tamu Undangan</h4>
+                    <h4 class="font-playfair text-[11px] tracking-[0.2em] uppercase font-bold text-cream/90 mb-5 border-b border-white/10 pb-3">Teruntuk Tamu Undangan</h4>
                     
                     <div class="space-y-4 text-center font-montserrat">
-                        <p class="text-[11px] leading-relaxed text-white/95 font-light">
+                        <p class="text-[11px] leading-relaxed text-cream/95 font-light">
                             Rasa syukur dan kebahagiaan yang tak terhingga atas kehadiran, dukungan moril, serta doa restu dari Bapak/Ibu, Keluarga, Sahabat, dan Rekan Sejawat sekalian pada Sidang Promosi Doktor ini.
                         </p>
-                        <p class="text-[11px] leading-relaxed text-white/80 font-light">
+                        <p class="text-[11px] leading-relaxed text-cream/80 font-light">
                             Kehadiran Bapak/Ibu sekalian menjadi penyemangat dan anugerah terbesar dalam pencapaian gelar akademik ini. Semoga Allah SWT senantiasa membalas kebaikan Bapak/Ibu dengan rahmat dan keberkahan yang berlipat ganda.
                         </p>
                     </div>
                     
+                    <!-- Ornamen Elemen Emas Kustom Baru sebagai Divider Penutup sebelum Tanda Tangan -->
+                    <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782271425/Desain_tanpa_judul_5_zf9j5w.png" alt="Ornamen Emas Penutup" class="w-36 mx-auto mt-6 mb-2 opacity-80 drop-shadow-[0_2px_8px_rgba(194,167,91,0.25)]">
+                    
                     <div class="mt-6 pt-5 border-t border-white/10">
-                        <p class="text-[8px] uppercase tracking-[0.3em] text-white/40 mb-1 font-bold font-montserrat">Hormat Saya,</p>
-                        <h3 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight">Abdul Rahman Safiih</h3>
+                        <p class="text-[8px] uppercase tracking-[0.3em] text-cream/40 mb-1 font-bold font-montserrat">Hormat Saya,</p>
+                        <h3 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight">Dr. Cornelia Dumarya Manik, S.E., M.M.</h3>
                     </div>
                 </div>
             </div>
         </section>
     </div>
 
-    <!-- MENU NAVIGASI BAWAH (PERSISTEN) -->
-    <div id="nav-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] z-[300]">
+    <!-- PERSISTENT NAVIGATION MENU WITH UPDATED 3D ICON SIZE (BORDERLESS) - HIDDEN BY DEFAULT AT COVER -->
+    <div id="nav-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] z-[300] transition-all duration-500 ease-out transform translate-y-28 opacity-0 pointer-events-none">
         <nav class="bottom-nav">
             <button onclick="scrollToSection('sec-opening')" class="nav-link active">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782270108/Beranda_cmggek.png" alt="Beranda" class="nav-icon-3d">
                 <span>Beranda</span>
             </button>
             <button onclick="scrollToSection('sec-profil')" class="nav-link">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782270105/Profil_hsk4jx.png" alt="Profil" class="nav-icon-3d">
                 <span>Profil</span>
             </button>
             <button onclick="scrollToSection('sec-acara')" class="nav-link">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782270105/Acara_kohers.png" alt="Acara" class="nav-icon-3d">
                 <span>Acara</span>
             </button>
             <button onclick="scrollToSection('sec-countdown')" class="nav-link">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782270109/Waktu_r0kjd8.png" alt="Waktu" class="nav-icon-3d">
                 <span>Waktu</span>
             </button>
             <button onclick="scrollToSection('sec-promotor')" class="nav-link">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782270104/Tim_eps857.png" alt="Tim" class="nav-icon-3d">
                 <span>Tim</span>
             </button>
             <button onclick="scrollToSection('sec-maps')" class="nav-link">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path></svg>
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782270107/Peta_uybkur.png" alt="Peta" class="nav-icon-3d">
                 <span>Peta</span>
             </button>
             <button onclick="scrollToSection('sec-thanks')" class="nav-link">
-                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782270104/RSVP_el34sx.png" alt="RSVP" class="nav-icon-3d">
                 <span>RSVP</span>
             </button>
         </nav>
@@ -931,9 +1021,28 @@
         isPlaying = !isPlaying;
     };
 
+    // Fungsi untuk memunculkan navigasi bawah dengan animasi transisi Tailwind
+    function showNavigation() {
+        const nav = document.getElementById('nav-container');
+        if (nav) {
+            nav.classList.remove('translate-y-28', 'opacity-0', 'pointer-events-none');
+            nav.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
+        }
+    }
+
+    // Fungsi untuk menyembunyikan navigasi bawah kembali ke bawah layar
+    function hideNavigation() {
+        const nav = document.getElementById('nav-container');
+        if (nav) {
+            nav.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
+            nav.classList.add('translate-y-28', 'opacity-0', 'pointer-events-none');
+        }
+    }
+
     // Fungsi membuka undangan dengan memutar audio secara dinamis
     window.bukaUndangan = function() {
         scrollToSection('sec-profil');
+        showNavigation(); // Munculkan navigasi sesaat setelah tombol Buka diklik
         const audio = document.getElementById("bg-music");
         if (audio && !isPlaying) {
             audio.play().then(() => {
@@ -993,17 +1102,27 @@
         setInterval(updateCountdown, 1000);
     }
 
-    // Efek 3D Gyroscope pada foto profil
+    // Efek Interaksi 3D Gyroscope & Kursor Mouse
     function init3dEffect() {
         const container = document.getElementById('profile-container-3d');
         const card = document.getElementById('card-3d');
+        const shine = document.getElementById('shine-3d');
         
         if (!container || !card) return;
 
         const handleMove = (x, y, rect) => {
-            const rotateX = -((y - rect.top) - (rect.height / 2)) / 10;
-            const rotateY = ((x - rect.left) - (rect.width / 2)) / 10;
+            const relativeX = (x - rect.left);
+            const relativeY = (y - rect.top);
+            
+            const rotateX = -((relativeY) - (rect.height / 2)) / 8;
+            const rotateY = ((relativeX) - (rect.width / 2)) / 8;
             card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+            if (shine) {
+                const shineX = (relativeX / rect.width) * 100;
+                const shineY = (relativeY / rect.height) * 100;
+                shine.style.backgroundPosition = `${shineX}% ${shineY}%`;
+            }
         };
 
         container.addEventListener('mousemove', (e) => {
@@ -1013,6 +1132,9 @@
 
         container.addEventListener('mouseleave', () => {
             card.style.transform = `rotateX(5deg) rotateY(-10deg)`;
+            if (shine) {
+                shine.style.backgroundPosition = `0% 0%`;
+            }
         });
 
         container.addEventListener('touchmove', (e) => {
@@ -1024,6 +1146,9 @@
 
         container.addEventListener('touchend', () => {
             card.style.transform = `rotateX(5deg) rotateY(-10deg)`;
+            if (shine) {
+                shine.style.backgroundPosition = `0% 0%`;
+            }
         });
     }
 
@@ -1032,41 +1157,62 @@
         const div = document.createElement('div');
         div.className = "fixed inset-0 z-[1000] flex items-center justify-center px-6 bg-black/85 backdrop-blur-md transition-all duration-300";
         div.innerHTML = `
-            <div class="glass-panel p-6 text-center max-w-xs border-gold/40 shadow-2xl bg-[#041617]/95 animate-fade-in-up">
-                <p class="text-[12px] mb-5 text-white leading-relaxed font-semibold text-center font-playfair">${msg}</p>
+            <div class="glass-panel p-6 text-center max-w-xs border-gold/40 shadow-2xl bg-[#121E13]/95 animate-fade-in-up">
+                <p class="text-[12px] mb-5 text-cream leading-relaxed font-semibold text-center font-playfair">${msg}</p>
                 <button onclick="this.parentElement.parentElement.remove()" class="btn-pop shadow-md px-6 py-2.5">Tutup</button>
             </div>
         `;
         document.body.appendChild(div);
     }
 
-    // Deteksi Scroll untuk mengaktifkan item Navigasi yang sedang aktif secara dinamis
+    // Deteksi Scroll untuk mengaktifkan item Navigasi & Memulai Animasi Masuk Foto Profil dari Kecil ke Besar
     const scrollContainer = document.getElementById('scroll-container');
-    scrollContainer.addEventListener('scroll', () => {
-        const sections = ['sec-opening', 'sec-profil', 'sec-acara', 'sec-countdown', 'sec-promotor', 'sec-maps', 'sec-thanks', 'sec-closing'];
-        let current = '';
-        
-        sections.forEach(s => {
-            const el = document.getElementById(s);
-            if(el) {
-                const rect = el.getBoundingClientRect();
-                if (rect.top >= -200 && rect.top <= 200) {
-                    current = s;
+    if (scrollContainer) {
+        scrollContainer.addEventListener('scroll', () => {
+            const sections = ['sec-opening', 'sec-profil', 'sec-acara', 'sec-countdown', 'sec-promotor', 'sec-maps', 'sec-thanks', 'sec-closing'];
+            let current = '';
+            
+            sections.forEach(s => {
+                const el = document.getElementById(s);
+                if(el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top >= -200 && rect.top <= 200) {
+                        current = s;
+                    }
+                }
+            });
+            
+            // Logika sembunyi/tampil navigasi berdasarkan posisi scroll saat ini
+            if (current === 'sec-opening' || !current) {
+                hideNavigation();
+            } else {
+                showNavigation();
+            }
+
+            // Logika pemicu animasi transisi elastis foto profil
+            const photoWrapper = document.getElementById('photo-scale-wrapper');
+            if (photoWrapper) {
+                if (current === 'sec-profil') {
+                    photoWrapper.classList.add('animate-photo-in');
+                } else if (current === 'sec-opening') {
+                    // Reset animasi saat kembali ke halaman depan agar efek dapat terulang kembali
+                    photoWrapper.classList.remove('animate-photo-in');
                 }
             }
+            
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                btn.classList.remove('active');
+                let matchTarget = current;
+                if (current === 'sec-closing') {
+                    matchTarget = 'sec-thanks';
+                }
+                const onClickAttr = btn.getAttribute('onclick');
+                if (onClickAttr && onClickAttr.includes(matchTarget)) {
+                    btn.classList.add('active');
+                }
+            });
         });
-        
-        document.querySelectorAll('.nav-link').forEach(btn => {
-            btn.classList.remove('active');
-            let matchTarget = current;
-            if (current === 'sec-closing') {
-                matchTarget = 'sec-thanks';
-            }
-            if (btn.getAttribute('onclick').includes(matchTarget)) {
-                btn.classList.add('active');
-            }
-        });
-    });
+    }
 </script>
 
 </body>
