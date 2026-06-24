@@ -45,7 +45,7 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
         const firebaseConfig = {
@@ -66,10 +66,18 @@
         window.firebaseStore = { appId };
 
         const initFirebase = async () => {
+            // OPTIMASI: Pemuatan data offline lokal berjalan terlebih dahulu agar halaman sangat responsif
+            loadFallbackRSVP();
+
             try {
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
-                db = getFirestore(app);
+                
+                // Gunakan Long-Polling murni untuk stabilitas render maksimal di dalam iframe sandbox
+                db = initializeFirestore(app, {
+                    experimentalForceLongPolling: true,
+                    useFetchStreams: false
+                });
                 
                 await signInAnonymously(auth);
                 
@@ -77,19 +85,12 @@
                     if (user) { 
                         isUsingFirebase = true;
                         loadPublicRSVP(); 
-                    } else {
-                        useFallback();
                     }
                 });
             } catch (error) { 
-                console.warn("Koneksi Firebase terhambat. Mengaktifkan mode lokal.", error.message); 
-                useFallback();
+                // Abaikan log error secara senyap agar tidak membebani memori browser
+                isUsingFirebase = false;
             }
-        };
-
-        const useFallback = () => {
-            isUsingFirebase = false;
-            loadFallbackRSVP();
         };
 
         const renderRSVPList = (docs) => {
@@ -132,7 +133,7 @@
         };
 
         const loadPublicRSVP = () => {
-            if (!auth.currentUser) return;
+            if (!auth || !auth.currentUser) return;
             const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
             onSnapshot(colRef, (snapshot) => {
                 const docs = [];
@@ -140,8 +141,9 @@
                 docs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 renderRSVPList(docs);
             }, (error) => {
-                console.error("Gagal membaca Firestore.", error);
-                useFallback();
+                // Gunakan mode penyimpanan lokal apabila Firebase mengalami limitasi jaringan
+                isUsingFirebase = false;
+                loadFallbackRSVP();
             });
         };
 
@@ -177,7 +179,7 @@
                 timestamp: new Date().toISOString()
             };
 
-            if (isUsingFirebase && auth.currentUser) {
+            if (isUsingFirebase && auth && auth.currentUser) {
                 try {
                     const colRef = collection(db, 'artifacts', appId, 'public', 'data', 'rsvp');
                     rsvpData.uid = auth.currentUser.uid;
@@ -224,6 +226,7 @@
             initFirebase(); 
             startCountdown(); 
             init3dEffect();
+            initPerformanceObserver(); 
         };
     </script>
 
@@ -305,7 +308,7 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
 
-        /* Video Latar Belakang - Dioptimalkan agar termuat instan */
+        /* Video Latar Belakang - Dioptimalkan untuk render GPU murni */
         .bg-video-wrapper {
             position: absolute;
             inset: 0;
@@ -314,11 +317,14 @@
             z-index: 0;
             pointer-events: none;
             overflow: hidden;
+            transform: translate3d(0,0,0);
+            backface-visibility: hidden;
         }
         .bg-video-wrapper video {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transform: translate3d(0,0,0);
         }
         .bg-video-overlay {
             position: absolute;
@@ -335,6 +341,7 @@
             overflow-y: scroll;
             scroll-snap-type: y mandatory;
             scrollbar-width: none;
+            -webkit-overflow-scrolling: touch; /* Mengaktifkan momentum scroll ultra lancar di iOS */
         }
         #scroll-container::-webkit-scrollbar { display: none; }
 
@@ -360,21 +367,21 @@
             overflow-y: auto;
         }
 
-        /* Bingkai Foto 3D - Akselerasi GPU */
+        /* Bingkai Foto 3D - Akselerasi GPU tingkat lanjut */
         .crystal-frame-3d {
             width: 210px; 
             height: 285px; 
             position: relative;
             transform-style: preserve-3d; 
-            transition: transform 0.15s ease-out;
+            transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
             perspective: 1200px;
-            will-change: transform; /* Aktivasi Akselerasi Hardware GPU */
+            will-change: transform;
         }
         .glass-layer {
             position: absolute; 
             inset: 0; 
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px); 
+            backdrop-filter: blur(12px); /* Mengurangi sedikit radius blur untuk optimalisasi render mobile */
             border-radius: 24px; 
             border: 3px solid #C2A75B; /* Emas Utama Tebal */
             box-shadow: 0 40px 80px rgba(0,0,0,0.85), inset 0 0 25px rgba(194, 167, 91, 0.3); 
@@ -399,7 +406,7 @@
             background: linear-gradient(135deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0) 70%);
             transform: translateZ(35px);
             pointer-events: none;
-            transition: background-position 0.1s ease-out;
+            transition: background-position 0.15s ease-out;
             background-size: 200% 200%;
             background-position: 0% 0%;
         }
@@ -419,9 +426,10 @@
         .corner-bl { bottom: -8px; left: -8px; border-right: none; border-top: none; border-radius: 0 0 0 6px; }
         .corner-br { bottom: -8px; right: -8px; border-left: none; border-top: none; border-radius: 0 0 6px 0; }
 
-        /* Wadah Navigasi Bawah - Akselerasi GPU */
+        /* Wadah Navigasi Bawah - Akselerasi GPU penuh */
         #nav-container {
-            will-change: transform, opacity; /* Cegah lag saat transisi buka undangan */
+            will-change: transform, opacity;
+            transform: translate3d(0, 0, 0);
         }
 
         .bottom-nav {
@@ -433,7 +441,8 @@
             justify-content: space-around; 
             align-items: center; 
             box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-            backdrop-filter: blur(25px);
+            backdrop-filter: blur(15px);
+            overflow: visible !important;
         }
         
         .nav-link {
@@ -443,7 +452,7 @@
             justify-content: center;
             flex: 1; 
             color: rgba(194, 167, 91, 0.45); 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             perspective: 500px;
             background: transparent;
             border: none;
@@ -463,9 +472,9 @@
             margin-bottom: 2px;
             object-fit: contain;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.4s ease;
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             transform-style: preserve-3d;
-            will-change: transform, filter; /* Optimasi interaksi menu cepat */
+            will-change: transform;
         }
         
         .nav-link.active .nav-icon-3d {
@@ -492,7 +501,7 @@
         }
 
         .music-control { 
-            position: fixed; 
+            position: absolute; 
             bottom: 110px; 
             right: 20px; 
             z-index: 400; 
@@ -557,7 +566,7 @@
 
         .glass-panel {
             background: rgba(41, 60, 42, 0.35); 
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.08); 
             border-radius: 28px;
             box-shadow: 0 25px 65px rgba(0,0,0,0.65); 
@@ -633,7 +642,7 @@
         }
 
         #photo-scale-wrapper {
-            will-change: transform, opacity; /* Mencegah stutter saat transisi elastis foto profil */
+            will-change: transform, opacity;
         }
     </style>
 </head>
@@ -641,7 +650,7 @@
 
 <div id="app-container" class="relative">
 
-    <audio id="bg-music" loop>
+    <audio id="bg-music" loop preload="auto">
         <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1782111309/Via_Valen_Yo_Ayo_prcvve.mp3" type="audio/mpeg">
     </audio>
     
@@ -968,8 +977,8 @@
         </section>
     </div>
 
-    <!-- PERSISTENT NAVIGATION MENU WITH UPDATED 3D ICON SIZE (BORDERLESS) - HIDDEN BY DEFAULT AT COVER -->
-    <div id="nav-container" class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[94%] max-w-[420px] z-[300] transition-all duration-500 ease-out transform translate-y-28 opacity-0 pointer-events-none">
+    <!-- PERSISTENT NAVIGATION MENU WITH UPDATED 3D ICON SIZE (BORDERLESS) - PERSISTENT, STABLE CENTERING -->
+    <div id="nav-container" class="absolute bottom-6 left-0 right-0 mx-auto w-[94%] max-w-[420px] z-[300] transition-all duration-500 ease-out transform translate-y-28 opacity-0 pointer-events-none">
         <nav class="bottom-nav">
             <button onclick="scrollToSection('sec-opening')" class="nav-link active">
                 <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782270108/Beranda_cmggek.png" alt="Beranda" class="nav-icon-3d">
@@ -1036,7 +1045,7 @@
     // Fungsi untuk memunculkan navigasi bawah dengan animasi transisi Tailwind
     function showNavigation() {
         const nav = document.getElementById('nav-container');
-        if (nav) {
+        if (nav && nav.classList.contains('pointer-events-none')) {
             nav.classList.remove('translate-y-28', 'opacity-0', 'pointer-events-none');
             nav.classList.add('translate-y-0', 'opacity-100', 'pointer-events-auto');
         }
@@ -1045,7 +1054,7 @@
     // Fungsi untuk menyembunyikan navigasi bawah kembali ke bawah layar
     function hideNavigation() {
         const nav = document.getElementById('nav-container');
-        if (nav) {
+        if (nav && !nav.classList.contains('pointer-events-none')) {
             nav.classList.remove('translate-y-0', 'opacity-100', 'pointer-events-auto');
             nav.classList.add('translate-y-28', 'opacity-0', 'pointer-events-none');
         }
@@ -1055,22 +1064,35 @@
     window.bukaUndangan = function() {
         scrollToSection('sec-profil');
         showNavigation(); // Munculkan navigasi sesaat setelah tombol Buka diklik
-        const audio = document.getElementById("bg-music");
-        if (audio && !isPlaying) {
-            audio.play().then(() => {
-                isPlaying = true;
-                musicBtn.classList.add("playing");
-            }).catch(() => {
-                // Autoplay diblokir oleh browser
-            });
-        }
+        
+        // OPTIMASI: Jalankan audio secara asynchronous lewat timer agar tidak mengunci thread visual utama
+        setTimeout(() => {
+            const audio = document.getElementById("bg-music");
+            if (audio && !isPlaying) {
+                audio.play().then(() => {
+                    isPlaying = true;
+                    musicBtn.classList.add("playing");
+                }).catch(() => {
+                    // Autoplay diblokir oleh browser
+                });
+            }
+        }, 50);
     };
 
     // Fungsi gulir halaman secara halus ke bagian id tertentu
     window.scrollToSection = (id) => {
+        const container = document.getElementById('scroll-container');
         const el = document.getElementById(id);
-        if (el) {
+        
+        if (container && el) {
+            // OPTIMASI: Nonaktifkan scroll-snap agar sistem fisika gulir murni tidak bertabrakan dengan smooth scroll
+            container.style.scrollSnapType = 'none';
             el.scrollIntoView({ behavior: 'smooth' });
+            
+            // Aktifkan kembali scroll-snap setelah animasi transisi selesai (rata-rata 800ms)
+            setTimeout(() => {
+                container.style.scrollSnapType = 'y mandatory';
+            }, 800);
         }
     };
 
@@ -1114,7 +1136,7 @@
         setInterval(updateCountdown, 1000);
     }
 
-    // Efek Interaksi 3D Gyroscope & Kursor Mouse
+    // Efek Interaksi 3D Gyroscope & Kursor Mouse - Throttled dengan requestAnimationFrame
     function init3dEffect() {
         const container = document.getElementById('profile-container-3d');
         const card = document.getElementById('card-3d');
@@ -1122,18 +1144,26 @@
         
         if (!container || !card) return;
 
-        const handleMove = (x, y, rect) => {
-            const relativeX = (x - rect.left);
-            const relativeY = (y - rect.top);
-            
-            const rotateX = -((relativeY) - (rect.height / 2)) / 8;
-            const rotateY = ((relativeX) - (rect.width / 2)) / 8;
-            card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        let ticking = false;
 
-            if (shine) {
-                const shineX = (relativeX / rect.width) * 100;
-                const shineY = (relativeY / rect.height) * 100;
-                shine.style.backgroundPosition = `${shineX}% ${shineY}%`;
+        const handleMove = (x, y, rect) => {
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    const relativeX = (x - rect.left);
+                    const relativeY = (y - rect.top);
+                    
+                    const rotateX = -((relativeY) - (rect.height / 2)) / 8;
+                    const rotateY = ((relativeX) - (rect.width / 2)) / 8;
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+                    if (shine) {
+                        const shineX = (relativeX / rect.width) * 100;
+                        const shineY = (relativeY / rect.height) * 100;
+                        shine.style.backgroundPosition = `${shineX}% ${shineY}%`;
+                    }
+                    ticking = false;
+                });
+                ticking = true;
             }
         };
 
@@ -1143,10 +1173,12 @@
         });
 
         container.addEventListener('mouseleave', () => {
-            card.style.transform = `rotateX(5deg) rotateY(-10deg)`;
-            if (shine) {
-                shine.style.backgroundPosition = `0% 0%`;
-            }
+            window.requestAnimationFrame(() => {
+                card.style.transform = `rotateX(5deg) rotateY(-10deg)`;
+                if (shine) {
+                    shine.style.backgroundPosition = `0% 0%`;
+                }
+            });
         });
 
         container.addEventListener('touchmove', (e) => {
@@ -1154,13 +1186,15 @@
                 const rect = container.getBoundingClientRect();
                 handleMove(e.touches[0].clientX, e.touches[0].clientY, rect);
             }
-        });
+        }, { passive: true });
 
         container.addEventListener('touchend', () => {
-            card.style.transform = `rotateX(5deg) rotateY(-10deg)`;
-            if (shine) {
-                shine.style.backgroundPosition = `0% 0%`;
-            }
+            window.requestAnimationFrame(() => {
+                card.style.transform = `rotateX(5deg) rotateY(-10deg)`;
+                if (shine) {
+                    shine.style.backgroundPosition = `0% 0%`;
+                }
+            });
         });
     }
 
@@ -1177,53 +1211,55 @@
         document.body.appendChild(div);
     }
 
-    // Deteksi Scroll untuk mengaktifkan item Navigasi & Memulai Animasi Masuk Foto Profil dari Kecil ke Besar
-    const scrollContainer = document.getElementById('scroll-container');
-    if (scrollContainer) {
-        scrollContainer.addEventListener('scroll', () => {
-            const sections = ['sec-opening', 'sec-profil', 'sec-acara', 'sec-countdown', 'sec-promotor', 'sec-maps', 'sec-thanks', 'sec-closing'];
-            let current = '';
-            
-            sections.forEach(s => {
-                const el = document.getElementById(s);
-                if(el) {
-                    const rect = el.getBoundingClientRect();
-                    if (rect.top >= -200 && rect.top <= 200) {
-                        current = s;
-                    }
-                }
-            });
-            
-            // Logika sembunyi/tampil navigasi berdasarkan posisi scroll saat ini
-            if (current === 'sec-opening' || !current) {
-                hideNavigation();
-            } else {
-                showNavigation();
-            }
+    // PERFORMA BARU: Menggantikan event scroll konvensional dengan IntersectionObserver (Tanpa kalkulasi DOM berat)
+    function initPerformanceObserver() {
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const photoWrapper = document.getElementById('photo-scale-wrapper');
 
-            // Logika pemicu animasi transisi elastis foto profil
-            const photoWrapper = document.getElementById('photo-scale-wrapper');
-            if (photoWrapper) {
-                if (current === 'sec-profil') {
-                    photoWrapper.classList.add('animate-photo-in');
-                } else if (current === 'sec-opening') {
-                    // Reset animasi saat kembali ke halaman depan agar efek dapat terulang kembali
-                    photoWrapper.classList.remove('animate-photo-in');
-                }
-            }
-            
-            document.querySelectorAll('.nav-link').forEach(btn => {
-                btn.classList.remove('active');
-                let matchTarget = current;
-                if (current === 'sec-closing') {
-                    matchTarget = 'sec-thanks';
-                }
-                const onClickAttr = btn.getAttribute('onclick');
-                if (onClickAttr && onClickAttr.includes(matchTarget)) {
-                    btn.classList.add('active');
+        const observerOptions = {
+            root: document.getElementById('scroll-container'),
+            threshold: 0.35 // Memicu ketika 35% bagian terlihat di layar
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const currentId = entry.target.id;
+                    
+                    // Logika sembunyi/tampil navigasi berdasarkan deteksi seksi aktif
+                    if (currentId === 'sec-opening') {
+                        hideNavigation();
+                    } else {
+                        showNavigation();
+                    }
+
+                    // Logika pemicu animasi transisi elastis masuk foto profil
+                    if (photoWrapper) {
+                        if (currentId === 'sec-profil') {
+                            photoWrapper.classList.add('animate-photo-in');
+                        } else if (currentId === 'sec-opening') {
+                            photoWrapper.classList.remove('animate-photo-in');
+                        }
+                    }
+
+                    // Logika menyalakan ikon menu aktif
+                    navLinks.forEach(btn => {
+                        btn.classList.remove('active');
+                        let matchTarget = currentId;
+                        if (currentId === 'sec-closing') {
+                            matchTarget = 'sec-thanks';
+                        }
+                        const onClickAttr = btn.getAttribute('onclick');
+                        if (onClickAttr && onClickAttr.includes(matchTarget)) {
+                            btn.classList.add('active');
+                        }
+                    });
                 }
             });
-        });
+        }, observerOptions);
+
+        sections.forEach(section => observer.observe(section));
     }
 </script>
 
