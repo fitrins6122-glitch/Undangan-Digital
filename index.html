@@ -10,7 +10,7 @@
 
     <!-- Open Graph / Meta Tags untuk WhatsApp & Media Sosial (Link Preview) -->
     <meta property="og:title" content="Sidang Promosi Dr. Cornelia Dumarya Manik, S.E., M.M. - Undangan Digital">
-    <meta property="og:description" content="Selasa, 2 Juni 2026 | Ujian Sidang Promosi Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan.">
+    <meta property="og:description" content="Selasa, 30 Juni 2026 | Ujian Sidang Promosi Doktor Ilmu Manajemen Pascasarjana Universitas Pasundan.">
     <meta property="og:image" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782275868/WhatsApp_Image_2026-06-22_at_13.24.37_b8ixyf.jpg">
     <meta property="og:image:secure_url" content="https://res.cloudinary.com/dfbkph06k/image/upload/v1782275868/WhatsApp_Image_2026-06-22_at_13.24.37_b8ixyf.jpg">
     <meta property="og:image:type" content="image/jpeg">
@@ -30,9 +30,9 @@
             theme: {
                 extend: {
                     colors: {
-                        gold: '#C2A75B',          // Emas Utama Baru
-                        'deep-sage': '#293C2A',     // Hijau Utama Baru
-                        cream: '#E0E4DC',           // Putih Netral Baru
+                        gold: '#C2A75B',          // Emas Utama
+                        'deep-sage': '#293C2A',     // Hijau Utama
+                        cream: '#E0E4DC',           // Putih Netral
                         'sage-accent': '#4F6B51'    // Aksen Hijau Pendukung
                     }
                 }
@@ -64,16 +64,15 @@
         let isUsingFirebase = false;
 
         window.firebaseStore = { appId };
+        window.allRSVPData = []; // Menyimpan data tamu rsvp secara global untuk modal pencarian
 
         const initFirebase = async () => {
-            // OPTIMASI: Pemuatan data offline lokal berjalan terlebih dahulu agar halaman sangat responsif
             loadFallbackRSVP();
 
             try {
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
                 
-                // Gunakan Long-Polling murni untuk stabilitas render maksimal di dalam iframe sandbox
                 db = initializeFirestore(app, {
                     experimentalForceLongPolling: true,
                     useFetchStreams: false
@@ -88,12 +87,12 @@
                     }
                 });
             } catch (error) { 
-                // Abaikan log error secara senyap agar tidak membebani memori browser
                 isUsingFirebase = false;
             }
         };
 
         const renderRSVPList = (docs) => {
+            window.allRSVPData = docs; // Bagikan ke window agar bisa diakses modul modal
             let hadir = 0, ragu = 0, tidak = 0;
             
             const messagesHTML = docs.map(data => {
@@ -130,6 +129,11 @@
             if (container) {
                 container.innerHTML = messagesHTML || '<p class="text-[11px] opacity-40 italic py-6 text-center text-cream">Belum ada ucapan doa masuk.</p>';
             }
+
+            // Segarkan render tab modal jika sedang terbuka
+            if (typeof window.renderGuestTab === 'function') {
+                window.renderGuestTab();
+            }
         };
 
         const loadPublicRSVP = () => {
@@ -141,7 +145,6 @@
                 docs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
                 renderRSVPList(docs);
             }, (error) => {
-                // Gunakan mode penyimpanan lokal apabila Firebase mengalami limitasi jaringan
                 isUsingFirebase = false;
                 loadFallbackRSVP();
             });
@@ -277,6 +280,15 @@
         }
         .animate-pulse-slow {
             animation: pulseSlow 5s ease-in-out infinite;
+        }
+
+        /* Animasi mengambang 3D */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-8px) scale(1.03); }
+        }
+        .animate-float-slow {
+            animation: floatSlow 3.2s ease-in-out infinite;
         }
         
         @keyframes elasticScaleUp {
@@ -500,13 +512,18 @@
             box-shadow: 0 4px 10px rgba(194, 167, 91, 0.15);
         }
 
-        .music-control { 
-            position: absolute; 
-            bottom: 110px; 
-            right: 20px; 
-            z-index: 400; 
+        /* Navigasi Mengambang Kanan Samping */
+        .side-floating-controls {
+            position: absolute;
+            bottom: 110px;
+            right: 20px;
+            z-index: 400;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
-        .music-btn {
+
+        .side-btn {
             width: 44px; 
             height: 44px; 
             border-radius: 50%; 
@@ -515,18 +532,14 @@
             display: flex; 
             align-items: center; 
             justify-content: center;
-            color: #C2A75B; 
             border: 1px solid rgba(194, 167, 91, 0.4);
             box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            color: #C2A75B;
+            outline: none;
         }
-        .music-btn.playing {
-            animation: rotateDisk 4s linear infinite;
-        }
-
-        @keyframes rotateDisk {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .side-btn:active {
+            transform: scale(0.9);
         }
 
         input, select, textarea {
@@ -656,15 +669,20 @@
     
     <div class="bg-video-wrapper">
         <video autoplay loop muted playsinline preload="auto">
-            <!-- Video Latar Belakang Baru kustom -->
             <source src="https://res.cloudinary.com/dfbkph06k/video/upload/v1782280273/IMG_2538_mnoz0y.mp4" type="video/mp4">
         </video>
         <div class="bg-video-overlay"></div>
     </div>
 
-    <!-- Tombol Kontrol Musik -->
-    <div class="music-control">
-        <button onclick="toggleMusic()" class="music-btn" id="music-btn-container">
+    <!-- PERSISTENT FLOATING CONTROLS (RIGHT-SIDE) -->
+    <div class="side-floating-controls">
+        <!-- Tombol Daftar Kehadiran (Efek Mengambang 3D Bergerak) - HANYA MUNCUL DI HALAMAN RSVP -->
+        <button id="floating-guest-btn" onclick="openGuestListModal()" class="side-btn animate-float-slow flex items-center justify-center p-1.5 transition-all duration-500 transform scale-0 opacity-0 pointer-events-none" title="Daftar Kehadiran">
+            <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782363055/Desain_tanpa_judul_10_g14gyf.png" alt="Logo Kehadiran" class="w-full h-full object-contain">
+        </button>
+
+        <!-- Tombol Kontrol Musik -->
+        <button onclick="toggleMusic()" class="side-btn" id="music-btn-container" title="Putar/Jeda Musik">
             <svg id="music-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path id="music-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
             </svg>
@@ -766,7 +784,7 @@
                         <div class="h-8 w-px bg-gold/45"></div>
                         <div class="text-left">
                             <p class="text-[9px] text-gold tracking-widest font-bold uppercase">Juni</p>
-                            <p class="text-xl font-black text-cream leading-none">02</p>
+                            <p class="text-xl font-black text-cream leading-none">30</p>
                             <p class="text-[9px] text-gold tracking-widest font-bold">2026</p>
                         </div>
                     </div>
@@ -891,11 +909,38 @@
             <div class="w-full max-w-[420px] px-4 text-center">
                 <h3 class="font-playfair text-xl font-bold text-gold mb-3 uppercase tracking-widest italic">RSVP & Ucapan</h3>
                 
-                <div class="flex justify-between gap-1.5 mb-4">
-                    <div class="recap-item"><p id="count-total" class="text-sm font-bold text-cream font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Total</p></div>
-                    <div class="recap-item"><p id="count-hadir" class="text-sm font-bold text-gold font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Hadir</p></div>
-                    <div class="recap-item"><p id="count-ragu" class="text-sm font-bold text-cream/70 font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Ragu</p></div>
-                    <div class="recap-item"><p id="count-tidak" class="text-sm font-bold text-cream/40 font-cinzel">0</p><p class="text-[7px] uppercase opacity-60 font-bold tracking-wider mt-0.5">Izin</p></div>
+                <!-- 3D Attendance Recap Box -->
+                <div class="glass-panel p-5 border-gold/20 mb-4 shadow-2xl relative overflow-hidden bg-black/30 backdrop-blur-md">
+                    <div class="absolute -top-12 -left-12 w-24 h-24 bg-gold/10 rounded-full filter blur-xl"></div>
+                    <div class="absolute -bottom-12 -right-12 w-24 h-24 bg-emerald-500/5 rounded-full filter blur-xl"></div>
+
+                    <!-- 3D Grid Counters -->
+                    <div class="grid grid-cols-4 gap-2">
+                        <!-- Total -->
+                        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-white/10 to-white/[0.02] border border-white/10 p-3 shadow-[0_8px_20px_rgba(0,0,0,0.5),_inset_0_1px_0_rgba(255,255,255,0.1)] transition-transform duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer" onclick="openGuestListModalTab('total')">
+                            <p id="count-total" class="text-sm font-black text-white font-cinzel leading-none drop-shadow-md">0</p>
+                            <p class="text-[7px] font-bold text-cream/60 uppercase tracking-wider mt-1.5">Total</p>
+                            <div class="absolute inset-x-0 bottom-0 h-0.5 bg-cream/30"></div>
+                        </div>
+                        <!-- Hadir -->
+                        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-emerald-500/10 to-emerald-500/[0.02] border border-emerald-500/25 p-3 shadow-[0_8px_20px_rgba(16,185,129,0.15),_inset_0_1px_0_rgba(16,185,129,0.1)] transition-transform duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer" onclick="openGuestListModalTab('hadir')">
+                            <p id="count-hadir" class="text-sm font-black text-emerald-400 font-cinzel leading-none drop-shadow-md">0</p>
+                            <p class="text-[7px] font-bold text-emerald-300/80 uppercase tracking-wider mt-1.5">Hadir</p>
+                            <div class="absolute inset-x-0 bottom-0 h-0.5 bg-emerald-500/50"></div>
+                        </div>
+                        <!-- Ragu -->
+                        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-gold/15 to-gold/[0.02] border border-gold/35 p-3 shadow-[0_8px_20px_rgba(194,167,91,0.2),_inset_0_1px_0_rgba(194,167,91,0.15)] transition-transform duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer" onclick="openGuestListModalTab('ragu')">
+                            <p id="count-ragu" class="text-sm font-black text-gold font-cinzel leading-none drop-shadow-md">0</p>
+                            <p class="text-[7px] font-bold text-gold/80 uppercase tracking-wider mt-1.5">Ragu</p>
+                            <div class="absolute inset-x-0 bottom-0 h-0.5 bg-gold/50"></div>
+                        </div>
+                        <!-- Izin -->
+                        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-rose-500/10 to-rose-500/[0.02] border border-rose-500/25 p-3 shadow-[0_8px_20px_rgba(244,63,94,0.15),_inset_0_1px_0_rgba(244,63,94,0.1)] transition-transform duration-300 hover:-translate-y-1 active:scale-95 cursor-pointer" onclick="openGuestListModalTab('tidak')">
+                            <p id="count-tidak" class="text-sm font-black text-rose-400 font-cinzel leading-none drop-shadow-md">0</p>
+                            <p class="text-[7px] font-bold text-rose-300/80 uppercase tracking-wider mt-1.5">Izin</p>
+                            <div class="absolute inset-x-0 bottom-0 h-0.5 bg-rose-500/50"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="glass-panel p-4 text-left border-gold/20 space-y-3 mb-4 shadow-2xl bg-black/25">
@@ -959,12 +1004,17 @@
                         </p>
                     </div>
                     
-                    <!-- Ornamen Elemen Emas Kustom Baru sebagai Divider Penutup sebelum Tanda Tangan -->
-                    <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782271425/Desain_tanpa_judul_5_zf9j5w.png" alt="Ornamen Emas Penutup" class="w-36 mx-auto mt-6 mb-2 opacity-80 drop-shadow-[0_2px_8px_rgba(194,167,91,0.25)]">
-                    
-                    <div class="mt-6 pt-5 border-t border-white/10">
-                        <p class="text-[8px] uppercase tracking-[0.3em] text-cream/40 mb-1 font-bold font-montserrat">Hormat Saya,</p>
-                        <h3 class="font-playfair text-base font-bold text-gold tracking-widest leading-tight">Dr. Cornelia Dumarya Manik, S.E., M.M.</h3>
+                    <div class="mt-8 pt-5 border-t border-white/10">
+                        <p class="text-[8px] uppercase tracking-[0.3em] text-cream/40 mb-1.5 font-bold font-montserrat">Hormat Saya,</p>
+                        <h3 class="font-playfair font-bold text-gold tracking-wider leading-tight whitespace-nowrap" style="font-size: clamp(12px, 3.8vw, 15px);">Dr. Cornelia Dumarya Manik, S.E., M.M.</h3>
+                    </div>
+
+                    <!-- Informasi Pemesanan Halus di Bagian Akhir -->
+                    <div class="mt-8 pt-4 border-t border-white/5 text-center flex flex-col items-center">
+                        <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782362182/Desain_tanpa_judul_9_kcyjeu.png" alt="Developer Logo" class="w-10 opacity-70 mb-2">
+                        <a href="https://wa.me/6285173458645" target="_blank" class="text-[9px] text-cream/60 hover:text-gold transition-colors font-montserrat">
+                            Ingin pesan undangan seperti ini? Hubungi kami via WhatsApp.
+                        </a>
                     </div>
                 </div>
             </div>
@@ -1004,11 +1054,41 @@
             </button>
         </nav>
     </div>
+
+    <!-- MODAL 3D DETAIL DAFTAR TAMU -->
+    <div id="guest-list-modal" class="fixed inset-0 z-[500] hidden items-center justify-center px-4 bg-black/85 backdrop-blur-md transition-all duration-300">
+        <div class="glass-panel p-5 max-w-sm w-full border-gold/40 shadow-2xl bg-[#121E13]/95 flex flex-col max-h-[80vh] relative overflow-hidden">
+            <div class="absolute -top-12 -left-12 w-24 h-24 bg-gold/10 rounded-full filter blur-xl"></div>
+            
+            <!-- Header Modal -->
+            <div class="flex justify-between items-center border-b border-white/10 pb-3 mb-4 z-10">
+                <div class="flex items-center gap-2">
+                    <img src="https://res.cloudinary.com/dfbkph06k/image/upload/v1782363055/Desain_tanpa_judul_10_g14gyf.png" alt="Daftar" class="w-6 h-6 object-contain">
+                    <h3 class="font-playfair text-gold font-bold text-sm uppercase tracking-wider">Konfirmasi Kehadiran</h3>
+                </div>
+                <button onclick="closeGuestListModal()" class="text-white/60 hover:text-white font-bold text-lg focus:outline-none transition-colors">&times;</button>
+            </div>
+            
+            <!-- Tab Menu Status -->
+            <div class="flex border-b border-white/5 mb-3 text-[10px] font-bold uppercase tracking-widest z-10">
+                <button onclick="switchGuestTab('total')" id="tab-total" class="flex-1 py-2 text-center text-cream border-b-2 border-cream">Semua</button>
+                <button onclick="switchGuestTab('hadir')" id="tab-hadir" class="flex-1 py-2 text-center text-white/50 border-b-2 border-transparent">Hadir</button>
+                <button onclick="switchGuestTab('ragu')" id="tab-ragu" class="flex-1 py-2 text-center text-white/50 border-b-2 border-transparent">Ragu</button>
+                <button onclick="switchGuestTab('tidak')" id="tab-tidak" class="flex-1 py-2 text-center text-white/50 border-b-2 border-transparent">Izin</button>
+            </div>
+
+            <!-- Scrollable Guest List -->
+            <div id="guest-tab-content" class="flex-1 overflow-y-auto pr-1 space-y-2 max-h-[50vh] z-10">
+                <p class="text-[10px] text-center opacity-40 py-8 italic text-cream">Sedang memuat daftar...</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     const musicBtn = document.getElementById("music-btn-container");
     let isPlaying = false;
+    let currentGuestTab = 'total'; // Tab aktif default modal tamu
 
     // Menangani pencarian parameter nama tamu di URL (?to=Nama+Tamu)
     const getQueryParam = (param) => {
@@ -1090,9 +1170,95 @@
         }
     };
 
-    // Mengatur waktu hitung mundur (Selasa, 2 Juni 2026 pukul 09.30)
+    // MODAL LOGIC DAFTAR HADIR
+    window.openGuestListModal = () => {
+        const modal = document.getElementById('guest-list-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            renderGuestTab();
+        }
+    };
+
+    window.openGuestListModalTab = (tabName) => {
+        switchGuestTab(tabName);
+        openGuestListModal();
+    };
+
+    window.closeGuestListModal = () => {
+        const modal = document.getElementById('guest-list-modal');
+        if (modal) {
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+    };
+
+    window.switchGuestTab = (tab) => {
+        currentGuestTab = tab;
+        ['total', 'hadir', 'ragu', 'tidak'].forEach(t => {
+            const el = document.getElementById(`tab-${t}`);
+            if (el) {
+                if (t === tab) {
+                    el.classList.add('border-b-2');
+                    if (t === 'total') { el.className = "flex-1 py-2 text-center text-cream border-b-2 border-cream"; }
+                    else if (t === 'hadir') { el.className = "flex-1 py-2 text-center text-emerald-400 border-b-2 border-emerald-500"; }
+                    else if (t === 'ragu') { el.className = "flex-1 py-2 text-center text-gold border-b-2 border-gold"; }
+                    else { el.className = "flex-1 py-2 text-center text-rose-400 border-b-2 border-rose-500"; }
+                } else {
+                    el.className = "flex-1 py-2 text-center text-white/50 border-b-2 border-transparent";
+                }
+            }
+        });
+        renderGuestTab();
+    };
+
+    window.renderGuestTab = () => {
+        const container = document.getElementById('guest-tab-content');
+        if (!container) return;
+
+        let filtered = [];
+        if (currentGuestTab === 'total') {
+            filtered = window.allRSVPData || [];
+        } else if (currentGuestTab === 'hadir') {
+            filtered = (window.allRSVPData || []).filter(item => item.status === 'Hadir');
+        } else if (currentGuestTab === 'ragu') {
+            filtered = (window.allRSVPData || []).filter(item => item.status === 'Masih Ragu');
+        } else if (currentGuestTab === 'tidak') {
+            filtered = (window.allRSVPData || []).filter(item => item.status === 'Tidak Hadir' || item.status === 'Berhalangan');
+        }
+
+        if (filtered.length === 0) {
+            container.innerHTML = `<p class="text-[10px] text-center opacity-40 py-12 italic text-cream">Belum ada data tamu di kategori ini.</p>`;
+            return;
+        }
+
+        container.innerHTML = filtered.map(data => {
+            let statusBadge = '';
+            if (data.status === 'Hadir') {
+                statusBadge = '<span class="text-[7px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 uppercase font-black tracking-wider">Hadir</span>';
+            } else if (data.status === 'Masih Ragu') {
+                statusBadge = '<span class="text-[7px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20 uppercase font-black tracking-wider">Ragu</span>';
+            } else {
+                statusBadge = '<span class="text-[7px] px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/20 uppercase font-black tracking-wider">Izin</span>';
+            }
+
+            return `
+                <div class="bg-white/5 border border-white/5 p-2 rounded-xl flex justify-between items-center transition-all hover:border-white/10">
+                    <div class="flex flex-col text-left">
+                        <span class="font-bold text-[10px] text-cream leading-tight">${data.name}</span>
+                        <span class="text-[8px] text-gold/80 mt-0.5">${data.relation || 'Rekan'}</span>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        ${statusBadge}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    };
+
+    // Mengatur waktu hitung mundur (Selasa, 30 Juni 2026 pukul 09.30)
     function startCountdown() {
-        const eventDate = new Date(2026, 5, 2, 9, 30, 0).getTime();
+        const eventDate = new Date(2026, 5, 30, 9, 30, 0).getTime();
         
         const updateCountdown = () => {
             const now = new Date().getTime();
@@ -1210,6 +1376,7 @@
         const sections = document.querySelectorAll('section');
         const navLinks = document.querySelectorAll('.nav-link');
         const photoWrapper = document.getElementById('photo-scale-wrapper');
+        const floatingGuestBtn = document.getElementById('floating-guest-btn');
 
         const observerOptions = {
             root: document.getElementById('scroll-container'),
@@ -1226,6 +1393,17 @@
                         hideNavigation();
                     } else {
                         showNavigation();
+                    }
+
+                    // Logika menampilkan tombol daftar kehadiran hanya di halaman RSVP (sec-thanks)
+                    if (floatingGuestBtn) {
+                        if (currentId === 'sec-thanks') {
+                            floatingGuestBtn.classList.remove('scale-0', 'opacity-0', 'pointer-events-none');
+                            floatingGuestBtn.classList.add('scale-100', 'opacity-100', 'pointer-events-auto');
+                        } else {
+                            floatingGuestBtn.classList.remove('scale-100', 'opacity-100', 'pointer-events-auto');
+                            floatingGuestBtn.classList.add('scale-0', 'opacity-0', 'pointer-events-none');
+                        }
                     }
 
                     // Logika pemicu animasi transisi elastis masuk foto profil
